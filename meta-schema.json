@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://gitlab.eyepea.eu/allocloud/open-apt/raw/develop/meta-schema.json",
   "definitions": {
     "architecture": {
       "type": "string"
