@@ -5,7 +5,7 @@
     "repositories",
     "mirrors",
     "snapshots",
-    "publishes"
+    "publishings"
   ],
   "properties": {
     "repositories": {
@@ -71,7 +71,7 @@
         }
       }
     },
-    "publishes": {
+    "publishings": {
       "type": "object",
       "patternProperties": "^.+$",
       "additionalProperties": {
@@ -96,6 +96,116 @@
               "repository": {
                 "type": "string",
                 "pattern": "^.+$"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "snapshots": {
+      "type": "object",
+      "patternProperties": "^.+$",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "repository"
+            ],
+            "properties": {
+              "type": {
+                "const": "create"
+              },
+              "repository": {
+                "type": "string",
+                "pattern": "^.+$"
+              },
+              "architectures": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "mirror"
+            ],
+            "properties": {
+              "type": {
+                "const": "create"
+              },
+              "mirror": {
+                "type": "string",
+                "pattern": "^.+$"
+              },
+              "architectures": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "sources"
+            ],
+            "properties": {
+              "type": {
+                "const": "merge"
+              },
+              "sources": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "string",
+                  "pattern": "^.+$"
+                }
+              },
+              "architectures": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "latest": {
+                "type": "boolean"
+              },
+              "noRemove": {
+                "type": "boolean"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "source",
+              "filter"
+            ],
+            "properties": {
+              "type": {
+                "const": "filter"
+              },
+              "source": {
+                "type": "string",
+                "pattern": "^.+$"
+              },
+              "filter": {
+                "type": "string"
+              },
+              "withDeps": {
+                "type": "boolean"
+              },
+              "architectures": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
