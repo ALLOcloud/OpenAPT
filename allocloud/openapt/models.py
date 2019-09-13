@@ -73,3 +73,22 @@ class EntityCollection(list):
             return next(entity for entity in self if isinstance(entity, classinfo) and entity.name == name)
         except StopIteration:
             raise EntityNotFoundException()
+
+    def load(self, schema):
+        for name, params in schema.get('repositories').items():
+            self.append(Repository(name=name, **params))
+
+        for name, params in schema.get('mirrors').items():
+            self.append(Mirror(name=name, **params))
+
+        for name, params in schema.get('snapshots').items():
+            action = params.pop('type')
+            if action == 'create' and params.get('repository') is not None:
+                self.append(SnapshotRepository(name=name, **params))
+            elif action == 'create' and params.get('mirror') is not None:
+                self.append(SnapshotMirror(name=name, **params))
+            elif action == 'filter':
+                self.append(SnapshotFilter(name=name, **params))
+            elif action == 'merge':
+                self.append(SnapshotMerge(name=name, **params))
+

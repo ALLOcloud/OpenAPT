@@ -41,23 +41,7 @@ def main():
     # TODO validate json
 
     entities = EntityCollection()
-
-    for name, params in schema.get('repositories').items():
-        entities.append(Repository(name=name, **params))
-
-    for name, params in schema.get('mirrors').items():
-        entities.append(Mirror(name=name, **params))
-
-    for name, params in schema.get('snapshots').items():
-        action = params.pop('type')
-        if action == 'create' and params.get('repository') is not None:
-            entities.append(SnapshotRepository(name=name, **params))
-        elif action == 'create' and params.get('mirror') is not None:
-            entities.append(SnapshotMirror(name=name, **params))
-        elif action == 'filter':
-            entities.append(SnapshotFilter(name=name, **params))
-        elif action == 'merge':
-            entities.append(SnapshotMerge(name=name, **params))
+    entities.load(schema)
 
     # Generate dependency graph
     graph = Graph()
