@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "type": "object",
+  "required": [
+    "repositories",
+    "mirrors",
+    "snapshots",
+    "publishes"
+  ],
+  "properties": {
+    "repositories": {
+      "type": "object",
+      "patternProperties": "^.+$",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "architectures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "component": {
+            "type": "string"
+          },
+          "distribution": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mirrors": {
+      "type": "object",
+      "patternProperties": "^.+$",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "archive": {
+            "type": "string"
+          },
+          "distribution": {
+            "type": "string"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "architectures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "filter": {
+            "type": "string"
+          },
+          "filterWithDeps": {
+            "type": "boolean"
+          },
+          "withSources": {
+            "type": "boolean"
+          },
+          "withUdebs": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "publishes": {
+      "type": "object",
+      "patternProperties": "^.+$",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "snapshot"
+            ],
+            "properties": {
+              "snapshot": {
+                "type": "string",
+                "pattern": "^.+$"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "repository"
+            ],
+            "properties": {
+              "repository": {
+                "type": "string",
+                "pattern": "^.+$"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
