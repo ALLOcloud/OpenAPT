@@ -1,17 +1,28 @@
 from typing import List, Optional
 from dataclasses import dataclass, field
+from allocloud.openapt.errors import EntityNotFoundException
 
 @dataclass
-class Repository():
+class Entity():
     name: str
+
+    @property
+    def priority(self):
+        return -1
+
+@dataclass
+class Repository(Entity):
     comment: Optional[str] = None
     component: Optional[str] = None
     distribution: Optional[str] = None
     architectures: Optional[List[str]] = None
 
+    @property
+    def priority(self):
+        return 4
+
 @dataclass
-class Mirror():
-    name: str
+class Mirror(Entity):
     archive: str
     distribution: Optional[str] = None
     components: Optional[List[str]] = None
@@ -21,12 +32,16 @@ class Mirror():
     withSources: bool = False
     withUdebs: bool = False
 
-@dataclass
-class Snapshot():
-    name: str
+    @property
+    def priority(self):
+        return 3
 
-    def __post_init__(type=None):
-        print(type)
+@dataclass
+class Snapshot(Entity):
+
+    @property
+    def priority(self):
+        return 2
 
 @dataclass
 class SnapshotRepository(Snapshot):
@@ -37,3 +52,24 @@ class SnapshotRepository(Snapshot):
 class SnapshotMirror(Snapshot):
     mirror: str
     architectures: Optional[List[str]] = None
+
+@dataclass
+class SnapshotMerge(Snapshot):
+    sources: List[str]
+    architectures: Optional[List[str]] = None
+    latest: bool = False
+    noRemove: bool = False
+
+@dataclass
+class SnapshotFilter(Snapshot):
+    source: str
+    filter: str
+    architectures: Optional[List[str]] = None
+    withDeps: bool = False
+
+class EntityCollection(list):
+    def search(self, name, classinfo):
+        try:
+            return next(entity for entity in self if isinstance(entity, classinfo) and entity.name == name)
+        except StopIteration:
+            raise EntityNotFoundException()
