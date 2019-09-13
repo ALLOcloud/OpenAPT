@@ -1,10 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
   "definitions": {
+    "architecture": {
+      "type": "string"
+    },
     "architectures": {
       "type": "array",
       "items": {
-        "type": "string"
+        "$ref": "#/definitions/architecture"
+      }
+    },
+    "component": {
+      "type": "string"
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/component"
       }
     }
   },
@@ -25,7 +37,7 @@
             "$ref": "#/definitions/architectures"
           },
           "component": {
-            "type": "string"
+            "$ref": "#/definitions/component"
           },
           "distribution": {
             "type": "string"
@@ -48,10 +60,7 @@
             "type": "string"
           },
           "components": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "$ref": "#/definitions/components"
           },
           "architectures": {
             "$ref": "#/definitions/architectures"
@@ -83,6 +92,9 @@
             "properties": {
               "snapshot": {
                 "type": "string"
+              },
+              "components": {
+                "$ref": "#/definitions/components"
               }
             }
           }, {
@@ -93,6 +105,9 @@
             "properties": {
               "repository": {
                 "type": "string"
+              },
+              "components": {
+                "$ref": "#/definitions/components"
               }
             }
           }
