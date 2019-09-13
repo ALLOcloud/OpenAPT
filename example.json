@@ -1,0 +1,38 @@
+{
+  "repositories": {
+    "allocloud": {
+    }
+  },
+  "mirrors": {
+    "debian_buster": {
+      "archive": "..."
+    }
+  },
+  "snapshots": {
+    "allocloud": {
+      "type": "create",
+      "repository": "allocloud"
+    },
+    "buster": {
+      "type": "create",
+      "mirror": "debian_buster"
+    },
+    "numberland": {
+      "type": "merge",
+      "sources": [
+        "allocloud_filtered",
+        "buster"
+      ]
+    },
+    "allocloud_filtered": {
+      "type": "filter",
+      "source": "allocloud",
+      "filter": ""
+    }
+  },
+  "publishings": {
+    "numberland": {
+      "snapshot": "numberland"
+    }
+  }
+}
