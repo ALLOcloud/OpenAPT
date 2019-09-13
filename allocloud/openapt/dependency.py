@@ -9,10 +9,16 @@ class Graph():
         self.edges.append(source, dependency)
 
     def resolve(self, entities):
-        # First we get a list of all entity which are not a dependency of another entity
+        # Resolving the dependency tree is done with Kahn's algorithm
+
         edges = self.edges.copy()
-        root_entities = list(filter(lambda entity: edges.has_dependency(entity) is None, entities))
         sorted_entities = []
+
+        # First we get a list with each entity which is not a dependency of another entity
+        # These are "root" entities
+        root_entities = list(filter(lambda entity: edges.has_dependency(entity) is None, entities))
+
+        # For each root entity we find its dependencies and we add them self as a root dependency
         while len(root_entities):
             entity = root_entities.pop()
             sorted_entities.append(entity)
@@ -24,11 +30,16 @@ class Graph():
                 if not edges.has_dependency(dependency):
                     root_entities.append(dependency)
 
+        # If we still have edges in the graph, they are circular dependencies
         if not edges.empty():
-            raise CircularDependencyException()
+            raise CircularDependencyException() # TODO print a list of circular dependencies
 
+        # We partially sort the result by entity priority, BUT we keep the order per type of entity.
         sorted_entities.sort(key=lambda entity: entity.priority)
+
+        # Finally we reverse the array since to execute command from bottom to top
         sorted_entities.reverse()
+
         return sorted_entities
 
 class EdgeCollection():
