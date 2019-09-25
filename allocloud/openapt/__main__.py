@@ -1,4 +1,5 @@
 import json
+import logging
 from argparse import ArgumentParser
 from allocloud.openapt.errors import OAException
 from allocloud.openapt.dependency import Graph
@@ -33,6 +34,8 @@ def main():
         metavar='<schema>',
     )
     args = vars(parser.parse_args())
+
+    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING, format='%(message)s')
 
     schema = None
     with open(args.get('schema')) as f:

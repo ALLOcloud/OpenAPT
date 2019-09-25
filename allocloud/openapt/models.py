@@ -1,7 +1,9 @@
+import logging
 from typing import List, Optional
 from dataclasses import dataclass, field
 from allocloud.openapt.errors import EntityNotFoundException
 
+LOGGER = logging.getLogger(__name__)
 @dataclass
 class Entity():
     name: str
