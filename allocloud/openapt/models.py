@@ -26,7 +26,7 @@ class Repository(Entity):
 @dataclass
 class Mirror(Entity):
     archive: str
-    distribution: Optional[str] = None
+    distribution: str
     components: Optional[List[str]] = None
     architectures: Optional[List[str]] = None
     filter: Optional[str] = None

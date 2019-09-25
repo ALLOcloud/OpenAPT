@@ -5,7 +5,9 @@
   },
   "mirrors": {
     "debian_buster": {
-      "archive": "..."
+      "archive": "http://ftp.belnet.be/debian",
+      "distribution": "buster",
+      "filter": "postgresql-server"
     }
   },
   "snapshots": {
