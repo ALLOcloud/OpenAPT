@@ -30,6 +30,12 @@ def main():
         required=False,
     )
     parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        default=False,
+        required=False,
+    )
+    parser.add_argument(
         'schema',
         type=str,
         metavar='<schema>',
@@ -47,7 +53,7 @@ def main():
     entities = EntityCollection()
     entities.load(schema)
 
-    context = Context(config=args.get('config'))
+    context = Context(config=args.get('config'), dry_run=args.get('dry_run'))
 
     # Generate dependency graph
     graph = Graph()

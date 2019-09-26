@@ -4,16 +4,17 @@ import logging
 import subprocess
 from typing import List, Optional
 from dataclasses import dataclass, field
-from allocloud.openapt.errors import EntityNotFoundException
+from allocloud.openapt.errors import EntityNotFoundException, AptlyException
 
 LOGGER = logging.getLogger(__name__)
 
 class Context():
-    def __init__(self, binary=None, config=None):
+    def __init__(self, binary=None, config=None, dry_run=False):
         self.binary = binary
         self.config = config
+        self.dry_run = dry_run
 
-    def command(self, args, log=True):
+    def command(self, args, expected_code=0, log_output=True):
         command = [(self.binary if self.binary else 'aptly')]
 
         if self.config:
@@ -22,6 +23,9 @@ class Context():
         command += args
 
         LOGGER.info(' '.join(command))
+
+        if self.dry_run:
+            return True
 
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while process.poll() is None:
@@ -39,20 +43,18 @@ class Context():
                     if not output:
                         process.stderr.close()
                         files.remove(process.stderr)
-                    else:
-                        if log:
-                            LOGGER.error(output.rstrip('\n'))
+                    elif log_output:
+                        LOGGER.error(output.rstrip('\n'))
 
                 if process.stdout in streams:
                     output = process.stdout.readline().decode()
                     if not output:
                         process.stdout.close()
                         files.remove(process.stdout)
-                    else:
-                        if log:
-                            LOGGER.debug(output.rstrip('\n'))
+                    elif log_output:
+                        LOGGER.debug(output.rstrip('\n'))
 
-        return process.returncode
+        return process.returncode == expected_code
 
 @dataclass
 class Entity():
@@ -77,7 +79,7 @@ class Repository(Entity):
         return 4
 
     def run(self, context: Context):
-        if context.command(['repo', 'show', self.name], False) == 0:
+        if not context.command(['repo', 'show', self.name], 1, False):
             return
 
         extra_args = []
@@ -93,7 +95,8 @@ class Repository(Entity):
         if self.comment:
             extra_args.append('-comment=%s' % shlex.quote(self.comment))
 
-        context.command(extra_args + ['repo', 'create', self.name])
+        if not context.command(extra_args + ['repo', 'create', self.name]):
+            raise AptlyException()
 
 @dataclass
 class Mirror(Entity):
@@ -111,7 +114,7 @@ class Mirror(Entity):
         return 3
 
     def run(self, context: Context):
-        if context.command(['mirror', 'show', self.name], False) != 0:
+        if context.command(['mirror', 'show', self.name], 1, False):
             extra_args = []
             if self.architectures:
                 extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
@@ -128,13 +131,15 @@ class Mirror(Entity):
             if self.withUdebs:
                 extra_args.append('-with-udebs')
 
-            context.command(
+            if not context.command(
                 extra_args
                 + ['mirror', 'create', self.name, self.archive, self.distribution]
                 + (self.components if self.components else [])
-            )
+            ):
+                raise AptlyException()
 
-        context.command(['mirror', 'update', self.name])
+        if not context.command(['mirror', 'update', self.name]):
+            raise AptlyException()
 
 @dataclass
 class Snapshot(Entity):
@@ -149,14 +154,15 @@ class SnapshotRepository(Snapshot):
     architectures: Optional[List[str]] = None
 
     def run(self, context: Context):
-        if context.command(['snapshot', 'show', self.name], False) == 0:
+        if not context.command(['snapshot', 'show', self.name], 1, False):
             return
 
         extra_args = []
         if self.architectures:
             extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
 
-        context.command(extra_args + ['snapshot', 'create', self.name, 'from', 'repo', self.repository])
+        if not context.command(extra_args + ['snapshot', 'create', self.name, 'from', 'repo', self.repository]):
+            raise AptlyException()
 
 @dataclass
 class SnapshotMirror(Snapshot):
@@ -164,14 +170,15 @@ class SnapshotMirror(Snapshot):
     architectures: Optional[List[str]] = None
 
     def run(self, context: Context):
-        if context.command(['snapshot', 'show', self.name], False) == 0:
+        if not context.command(['snapshot', 'show', self.name], 1, False):
             return
 
         extra_args = []
         if self.architectures:
             extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
 
-        context.command(extra_args + ['snapshot', 'create', self.name, 'from', 'mirror', self.mirror])
+        if not context.command(extra_args + ['snapshot', 'create', self.name, 'from', 'mirror', self.mirror]):
+            raise AptlyException()
 
 @dataclass
 class SnapshotMerge(Snapshot):
@@ -181,7 +188,7 @@ class SnapshotMerge(Snapshot):
     noRemove: bool = False
 
     def run(self, context: Context):
-        if context.command(['snapshot', 'show', self.name], False) == 0:
+        if not context.command(['snapshot', 'show', self.name], 1, False):
             return
 
         extra_args = []
@@ -194,7 +201,8 @@ class SnapshotMerge(Snapshot):
         if self.noRemove:
             extra_args.append('-no-remove')
 
-        context.command(extra_args + ['snapshot', 'merge', self.name] + self.sources)
+        if not context.command(extra_args + ['snapshot', 'merge', self.name] + self.sources):
+            raise AptlyException()
 
 @dataclass
 class SnapshotFilter(Snapshot):
@@ -204,7 +212,7 @@ class SnapshotFilter(Snapshot):
     withDeps: bool = False
 
     def run(self, context: Context):
-        if context.command(['snapshot', 'show', self.name], False) == 0:
+        if not context.command(['snapshot', 'show', self.name], 1, False):
             return
 
         extra_args = []
@@ -214,7 +222,8 @@ class SnapshotFilter(Snapshot):
         if self.withDeps:
             extra_args.append('-with-deps')
 
-        context.command(extra_args + ['snapshot', 'filter', self.source, self.name, self.filter])
+        if not context.command(extra_args + ['snapshot', 'filter', self.source, self.name, self.filter]):
+            raise AptlyException()
 
 class EntityCollection(list):
     def search(self, name, classinfo):
