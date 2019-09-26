@@ -1,6 +1,9 @@
+import sys
 import json
 import logging
 from argparse import ArgumentParser
+from pkg_resources import resource_string
+from jsonschema import Draft4Validator
 from allocloud.openapt.errors import OAException
 from allocloud.openapt.dependency import Graph
 from allocloud.openapt.models import (
@@ -14,6 +17,8 @@ from allocloud.openapt.models import (
     SnapshotMerge,
     Context,
 )
+
+LOGGER = logging.getLogger(__name__)
 
 def main():
     parser = ArgumentParser(description='OpenAPT Aptly implementation.')
@@ -48,7 +53,14 @@ def main():
     with open(args.get('schema')) as f:
         schema = json.loads(f.read())
 
-    # TODO validate json
+    validator = Draft4Validator(json.loads(resource_string(__name__, 'meta-schema.json')))
+    failure = False
+    for error in validator.iter_errors(schema):
+        LOGGER.error(error.message)
+        failure = True
+
+    if failure:
+        sys.exit(1)
 
     entities = EntityCollection()
     entities.load(schema)
