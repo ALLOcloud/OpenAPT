@@ -110,7 +110,7 @@ class Mirror(Entity):
     def priority(self):
         return 3
 
-    def run(self, context={}):
+    def run(self, context: Context):
         if context.command(['mirror', 'show', self.name], False) != 0:
             extra_args = []
             if self.architectures:
