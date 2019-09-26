@@ -1,4 +1,3 @@
-from collections import defaultdict
 from allocloud.openapt.errors import CircularDependencyException
 
 class Graph():
@@ -19,7 +18,7 @@ class Graph():
         root_entities = list(filter(lambda entity: edges.has_dependency(entity) is None, entities))
 
         # For each root entity we find its dependencies and we add them self as a root dependency
-        while len(root_entities):
+        while root_entities:
             entity = root_entities.pop()
             sorted_entities.append(entity)
             for source, dependency in edges.copy():
@@ -43,8 +42,8 @@ class Graph():
         return sorted_entities
 
 class EdgeCollection():
-    def __init__(self, edges=[]):
-        self.edges = edges
+    def __init__(self, edges=None):
+        self.edges = edges if edges else []
 
     def __iter__(self):
         return self.edges.__iter__()
@@ -70,5 +69,3 @@ class EdgeCollection():
 
     def copy(self):
         return EdgeCollection(self.edges.copy())
-
-

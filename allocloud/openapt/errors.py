@@ -1,4 +1,3 @@
-
 class OAException(Exception):
     pass
 
@@ -8,8 +7,8 @@ class AptlyException(OAException):
 
 class EntityNotFoundException(OAException):
     def __init__(self):
-        super(EntityNotFound, self).__init__('Dependency not found')
+        super(EntityNotFoundException, self).__init__('Dependency not found')
 
 class CircularDependencyException(OAException):
     def __init__(self):
-        super(CircularDependencyFound, self).__init__('Circular dependency found')
+        super(CircularDependencyException, self).__init__('Circular dependency found')
