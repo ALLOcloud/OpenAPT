@@ -25,7 +25,7 @@ class Context():
         return execute + args
 
     def execute(self, args, expected_code=0, log_output=True):
-        execute = self.execute(args)
+        execute = self.command(args)
 
         LOGGER.info(' '.join(execute))
 
