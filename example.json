@@ -5,9 +5,9 @@
   },
   "mirrors": {
     "debian_buster": {
-      "archive": "http://ftp.belnet.be/debian",
+      "archive": "http://deb.debian.org/debian",
       "distribution": "buster",
-      "filter": "postgresql-server"
+      "filter": "toilet"
     }
   },
   "snapshots": {
@@ -19,7 +19,7 @@
       "type": "create",
       "mirror": "debian_buster"
     },
-    "numberland": {
+    "openapt": {
       "type": "merge",
       "sources": [
         "allocloud_filtered",
@@ -29,12 +29,13 @@
     "allocloud_filtered": {
       "type": "filter",
       "source": "allocloud",
-      "filter": ""
+      "filter": "toilet",
+      "withDeps": true
     }
   },
   "publishings": {
-    "numberland": {
-      "snapshot": "numberland"
+    "openapt": {
+      "snapshot": "openapt"
     }
   }
 }

@@ -12,6 +12,7 @@ from allocloud.openapt.models import (
     SnapshotMirror,
     SnapshotFilter,
     SnapshotMerge,
+    Context,
 )
 
 def main():
@@ -46,6 +47,8 @@ def main():
     entities = EntityCollection()
     entities.load(schema)
 
+    context = Context(config=args.get('config'))
+
     # Generate dependency graph
     graph = Graph()
     try:
@@ -62,7 +65,7 @@ def main():
 
         ordered_entities = graph.resolve(entities)
         for entity in ordered_entities:
-            print(entity)
+            entity.run(context)
 
     except OAException as oae:
         print(oae)
