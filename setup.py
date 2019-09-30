@@ -12,6 +12,11 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     packages=find_namespace_packages(),
+    package_data={
+        'allocloud.openapt': [
+            'meta-schema.json',
+        ],
+    },
     install_requires=[
     ],
     setup_requires=[
