@@ -1,0 +1,18 @@
+Source: allocloud-openapt
+Section: misc
+Priority: optional
+Maintainer: Raphael Medaer <raphael.medaer@allocloud.com>
+Build-Depends: debhelper (>= 11), dh-python, python3-all, python3-setuptools
+Standards-Version: 4.1.3
+Homepage: https://gitlab.allocloud.com/allocloud/openapt
+X-Python3-Version: >= 3.7
+Vcs-Browser: https://gitlab.allocloud.com/allocloud/openapt
+Vcs-Git: https://gitlab.allocloud.com/allocloud/openapt.git
+#Testsuite: autopkgtest-pkg-python
+
+Package: allocloud-openapt
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Description: Specify and automate APT repository management
+ This package provides a tool to automate APT repository management
+ through a single APT schema model.
