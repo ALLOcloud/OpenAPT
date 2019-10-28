@@ -31,7 +31,7 @@ def main():
     parser.add_argument(
         '--config',
         type=str,
-        metavar='<aptly config>',
+        metavar='<file>',
         required=False,
     )
     parser.add_argument(
