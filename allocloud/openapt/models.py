@@ -43,6 +43,8 @@ class Context():
         self.config = config
         self.dry_run = dry_run
         self.formats = formats
+        self.now = datetime.now()
+        self.random = ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(32))
 
     def command(self, args):
         execute = [(self.binary if self.binary else 'aptly')]
@@ -57,8 +59,8 @@ class Context():
         subst_name = formatter.format(
             self.formats.get(category, '{name}'),
             name=name,
-            now=datetime.now(),
-            random=''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(32)),
+            now=self.now,
+            random=self.random,
         )
 
         if not formatter.name_detected:
