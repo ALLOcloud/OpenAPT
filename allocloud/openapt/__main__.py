@@ -86,7 +86,8 @@ def main():
             entity.run(context)
 
     except OAException as oae:
-        print(oae)
+        LOGGER.error(oae)
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
