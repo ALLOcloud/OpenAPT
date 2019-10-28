@@ -1,10 +1,10 @@
 import errno
 import shlex
 import select
-import string
 import random
 import logging
 import subprocess
+import string
 from string import Formatter
 from datetime import datetime
 from abc import ABC, abstractmethod
@@ -38,11 +38,11 @@ class NameFormatter(Formatter):
         return super(NameFormatter, self).get_field(field_name, args, kwargs)
 
 class Context():
-    def __init__(self, binary=None, config=None, dry_run=False, formats={}):
+    def __init__(self, binary=None, config=None, dry_run=False, formats=None):
         self.binary = binary
         self.config = config
         self.dry_run = dry_run
-        self.formats = formats
+        self.formats = formats or {}
         self.now = datetime.now()
         self.random = ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(32))
 
@@ -218,7 +218,8 @@ class SnapshotRepository(Snapshot):
         if self.architectures:
             extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
 
-        if not self.context.execute(extra_args + ['snapshot', 'create', self.format_name(), 'from', 'repo', self.repository]):
+        if not self.context.execute(
+                extra_args + ['snapshot', 'create', self.format_name(), 'from', 'repo', self.repository]):
             raise AptlyException()
 
 @dataclass
@@ -234,7 +235,8 @@ class SnapshotMirror(Snapshot):
         if self.architectures:
             extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
 
-        if not self.context.execute(extra_args + ['snapshot', 'create', self.format_name(), 'from', 'mirror', self.mirror]):
+        if not self.context.execute(
+                extra_args + ['snapshot', 'create', self.format_name(), 'from', 'mirror', self.mirror]):
             raise AptlyException()
 
 @dataclass
