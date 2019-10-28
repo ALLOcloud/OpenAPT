@@ -16,7 +16,11 @@ LOGGER = logging.getLogger(__name__)
 
 SPEC_DATE = 'date:'
 
-class NameTemplate(Formatter):
+class NameFormatter(Formatter):
+    def __init__(self):
+        super(NameFormatter, self).__init__()
+        self.name_detected = False
+
     def format_field(self, value, format_spec):
         if format_spec.startswith(SPEC_DATE):
             timestamp = value
@@ -25,7 +29,13 @@ class NameTemplate(Formatter):
 
             return value.strftime(format_spec[len(SPEC_DATE):])
 
-        return super(Template, self).format_field(value, format_spec)
+        return super(NameFormatter, self).format_field(value, format_spec)
+
+    def get_field(self, field_name, args, kwargs):
+        if field_name == 'name':
+            self.name_detected = True
+
+        return super(NameFormatter, self).get_field(field_name, args, kwargs)
 
 class Context():
     def __init__(self, binary=None, config=None, dry_run=False, formats={}):
@@ -43,12 +53,18 @@ class Context():
         return execute + args
 
     def format(self, category, name):
-        return NameTemplate().format(
+        formatter = NameFormatter()
+        subst_name = formatter.format(
             self.formats.get(category, '{name}'),
             name=name,
             now=datetime.now(),
             random=''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(32)),
         )
+
+        if not formatter.name_detected:
+            LOGGER.warning('Substitution string doesn\'t contain placeholder {name}!')
+
+        return subst_name
 
     def execute(self, args, expected_code=0, log_output=True):
         execute = self.command(args)
