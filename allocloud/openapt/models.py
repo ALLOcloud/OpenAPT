@@ -27,7 +27,7 @@ class NameFormatter(Formatter):
             if not isinstance(value, datetime):
                 timestamp = datetime.fromtimestamp(int(value))
 
-            return value.strftime(format_spec[len(SPEC_DATE):])
+            return timestamp.strftime(format_spec[len(SPEC_DATE):])
 
         return super(NameFormatter, self).format_field(value, format_spec)
 
