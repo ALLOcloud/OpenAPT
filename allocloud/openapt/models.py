@@ -1,8 +1,12 @@
 import errno
 import shlex
 import select
+import string
+import random
 import logging
 import subprocess
+from string import Formatter
+from datetime import datetime
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from dataclasses import dataclass
@@ -10,11 +14,25 @@ from allocloud.openapt.errors import EntityNotFoundException, AptlyException
 
 LOGGER = logging.getLogger(__name__)
 
+SPEC_DATE = 'date:'
+
+class NameTemplate(Formatter):
+    def format_field(self, value, format_spec):
+        if format_spec.startswith(SPEC_DATE):
+            timestamp = value
+            if not isinstance(value, datetime):
+                timestamp = datetime.fromtimestamp(int(value))
+
+            return value.strftime(format_spec[len(SPEC_DATE):])
+
+        return super(Template, self).format_field(value, format_spec)
+
 class Context():
-    def __init__(self, binary=None, config=None, dry_run=False):
+    def __init__(self, binary=None, config=None, dry_run=False, formats={}):
         self.binary = binary
         self.config = config
         self.dry_run = dry_run
+        self.formats = formats
 
     def command(self, args):
         execute = [(self.binary if self.binary else 'aptly')]
@@ -23,6 +41,14 @@ class Context():
             execute.append('-config=%s' % shlex.quote(self.config))
 
         return execute + args
+
+    def format(self, category, name):
+        return NameTemplate().format(
+            self.formats.get(category, '{name}'),
+            name=name,
+            now=datetime.now(),
+            random=''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(32)),
+        )
 
     def execute(self, args, expected_code=0, log_output=True):
         execute = self.command(args)
@@ -64,13 +90,14 @@ class Context():
 @dataclass
 class Entity(ABC):
     name: str
+    context: Context
 
     @property
     def priority(self):
         return -1
 
     @abstractmethod
-    def run(self, context: Context):
+    def run(self):
         raise NotImplementedError()
 
 @dataclass
@@ -84,8 +111,8 @@ class Repository(Entity):
     def priority(self):
         return 4
 
-    def run(self, context: Context):
-        if not context.execute(['repo', 'show', self.name], 1, False):
+    def run(self):
+        if not self.context.execute(['repo', 'show', self.name], 1, False):
             return
 
         extra_args = []
@@ -101,7 +128,7 @@ class Repository(Entity):
         if self.comment:
             extra_args.append('-comment=%s' % shlex.quote(self.comment))
 
-        if not context.execute(extra_args + ['repo', 'create', self.name]):
+        if not self.context.execute(extra_args + ['repo', 'create', self.name]):
             raise AptlyException()
 
 @dataclass
@@ -119,8 +146,8 @@ class Mirror(Entity):
     def priority(self):
         return 3
 
-    def run(self, context: Context):
-        if context.execute(['mirror', 'show', self.name], 1, False):
+    def run(self):
+        if self.context.execute(['mirror', 'show', self.name], 1, False):
             extra_args = []
             if self.architectures:
                 extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
@@ -137,13 +164,13 @@ class Mirror(Entity):
             if self.withUdebs:
                 extra_args.append('-with-udebs')
 
-            if not context.execute(
+            if not self.context.execute(
                     extra_args
                     + ['mirror', 'create', self.name, self.archive, self.distribution]
                     + (self.components if self.components else [])):
                 raise AptlyException()
 
-        if not context.execute(['mirror', 'update', self.name]):
+        if not self.context.execute(['mirror', 'update', self.name]):
             raise AptlyException()
 
 @dataclass
@@ -153,8 +180,11 @@ class Snapshot(Entity):
     def priority(self):
         return 2
 
+    def format_name(self):
+        return self.context.format('snapshot', self.name)
+
     @abstractmethod
-    def run(self, context: Context):
+    def run(self):
         raise NotImplementedError()
 
 @dataclass
@@ -162,15 +192,15 @@ class SnapshotRepository(Snapshot):
     repository: str
     architectures: Optional[List[str]] = None
 
-    def run(self, context: Context):
-        if not context.execute(['snapshot', 'show', self.name], 1, False):
+    def run(self):
+        if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
             return
 
         extra_args = []
         if self.architectures:
             extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
 
-        if not context.execute(extra_args + ['snapshot', 'create', self.name, 'from', 'repo', self.repository]):
+        if not self.context.execute(extra_args + ['snapshot', 'create', self.format_name(), 'from', 'repo', self.repository]):
             raise AptlyException()
 
 @dataclass
@@ -178,15 +208,15 @@ class SnapshotMirror(Snapshot):
     mirror: str
     architectures: Optional[List[str]] = None
 
-    def run(self, context: Context):
-        if not context.execute(['snapshot', 'show', self.name], 1, False):
+    def run(self):
+        if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
             return
 
         extra_args = []
         if self.architectures:
             extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
 
-        if not context.execute(extra_args + ['snapshot', 'create', self.name, 'from', 'mirror', self.mirror]):
+        if not self.context.execute(extra_args + ['snapshot', 'create', self.format_name(), 'from', 'mirror', self.mirror]):
             raise AptlyException()
 
 @dataclass
@@ -196,8 +226,8 @@ class SnapshotMerge(Snapshot):
     latest: bool = False
     noRemove: bool = False
 
-    def run(self, context: Context):
-        if not context.execute(['snapshot', 'show', self.name], 1, False):
+    def run(self):
+        if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
             return
 
         extra_args = []
@@ -210,7 +240,7 @@ class SnapshotMerge(Snapshot):
         if self.noRemove:
             extra_args.append('-no-remove')
 
-        if not context.execute(extra_args + ['snapshot', 'merge', self.name] + self.sources):
+        if not self.context.execute(extra_args + ['snapshot', 'merge', self.format_name()] + self.sources):
             raise AptlyException()
 
 @dataclass
@@ -220,8 +250,8 @@ class SnapshotFilter(Snapshot):
     architectures: Optional[List[str]] = None
     withDeps: bool = False
 
-    def run(self, context: Context):
-        if not context.execute(['snapshot', 'show', self.name], 1, False):
+    def run(self):
+        if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
             return
 
         extra_args = []
@@ -231,7 +261,7 @@ class SnapshotFilter(Snapshot):
         if self.withDeps:
             extra_args.append('-with-deps')
 
-        if not context.execute(extra_args + ['snapshot', 'filter', self.source, self.name, self.filter]):
+        if not self.context.execute(extra_args + ['snapshot', 'filter', self.source, self.format_name(), self.filter]):
             raise AptlyException()
 
 class EntityCollection(list):
@@ -241,20 +271,20 @@ class EntityCollection(list):
         except StopIteration:
             raise EntityNotFoundException()
 
-    def load(self, schema):
+    def load(self, schema, context):
         for name, params in schema.get('repositories').items():
-            self.append(Repository(name=name, **params))
+            self.append(Repository(name=name, context=context, **params))
 
         for name, params in schema.get('mirrors').items():
-            self.append(Mirror(name=name, **params))
+            self.append(Mirror(name=name, context=context, **params))
 
         for name, params in schema.get('snapshots').items():
             action = params.pop('type')
             if action == 'create' and params.get('repository') is not None:
-                self.append(SnapshotRepository(name=name, **params))
+                self.append(SnapshotRepository(name=name, context=context, **params))
             elif action == 'create' and params.get('mirror') is not None:
-                self.append(SnapshotMirror(name=name, **params))
+                self.append(SnapshotMirror(name=name, context=context, **params))
             elif action == 'filter':
-                self.append(SnapshotFilter(name=name, **params))
+                self.append(SnapshotFilter(name=name, context=context, **params))
             elif action == 'merge':
-                self.append(SnapshotMerge(name=name, **params))
+                self.append(SnapshotMerge(name=name, context=context, **params))

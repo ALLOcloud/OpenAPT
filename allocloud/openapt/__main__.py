@@ -41,6 +41,12 @@ def main():
         required=False,
     )
     parser.add_argument(
+        '--snapshot-subst',
+        required=False,
+        metavar='<template>',
+        help='Formating string for snapshots (e.g. "{now:date:%%Y%%d%%m_%%H%%M%%S}_{random:.8s}_{name}")',
+    )
+    parser.add_argument(
         'schema',
         type=str,
         metavar='<schema>',
@@ -62,10 +68,16 @@ def main():
     if failure:
         sys.exit(1)
 
-    entities = EntityCollection()
-    entities.load(schema)
+    context = Context(
+        config=args.get('config'),
+        dry_run=args.get('dry_run'),
+        formats={
+            'snapshot': args.get('snapshot_subst', '{name}'),
+        }
+    )
 
-    context = Context(config=args.get('config'), dry_run=args.get('dry_run'))
+    entities = EntityCollection()
+    entities.load(schema, context)
 
     # Generate dependency graph
     graph = Graph()
@@ -83,7 +95,7 @@ def main():
 
         ordered_entities = graph.resolve(entities)
         for entity in ordered_entities:
-            entity.run(context)
+            entity.run()
 
     except OAException as oae:
         LOGGER.error(oae)
