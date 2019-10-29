@@ -18,6 +18,7 @@ setup(
         ],
     },
     install_requires=[
+        'jsonschema',
     ],
     setup_requires=[
         'pytest-runner',
