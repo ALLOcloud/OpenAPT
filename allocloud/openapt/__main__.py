@@ -72,7 +72,7 @@ def main():
         config=args.get('config'),
         dry_run=args.get('dry_run'),
         formats={
-            'snapshot': args.get('snapshot_subst', '{name}'),
+            'snapshot': args.get('snapshot_subst') or '{name}',
         }
     )
 
