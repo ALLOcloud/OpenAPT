@@ -246,6 +246,9 @@ class SnapshotMerge(Snapshot):
     latest: bool = False
     noRemove: bool = False
 
+    def format_sources(self):
+        return [self.context.format('snapshot', source) for source in self.sources]
+
     def run(self):
         if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
             return
@@ -260,7 +263,7 @@ class SnapshotMerge(Snapshot):
         if self.noRemove:
             extra_args.append('-no-remove')
 
-        if not self.context.execute(extra_args + ['snapshot', 'merge', self.format_name()] + self.sources):
+        if not self.context.execute(extra_args + ['snapshot', 'merge', self.format_name()] + self.format_sources()):
             raise AptlyException()
 
 @dataclass
@@ -269,6 +272,9 @@ class SnapshotFilter(Snapshot):
     filter: str
     architectures: Optional[List[str]] = None
     withDeps: bool = False
+
+    def format_source(self):
+        return self.context.format('snapshot', self.source)
 
     def run(self):
         if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
@@ -281,7 +287,7 @@ class SnapshotFilter(Snapshot):
         if self.withDeps:
             extra_args.append('-with-deps')
 
-        if not self.context.execute(extra_args + ['snapshot', 'filter', self.source, self.format_name(), self.filter]):
+        if not self.context.execute(extra_args + ['snapshot', 'filter', self.format_source(), self.format_name(), self.filter]):
             raise AptlyException()
 
 class EntityCollection(list):
