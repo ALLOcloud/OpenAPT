@@ -92,6 +92,10 @@ def main():
             elif isinstance(entity, SnapshotMerge):
                 for source in entity.sources:
                     graph.add_dependency(entity, entities.search(source, Snapshot))
+            elif isinstance(entity, (Mirror, Repository)):
+                pass
+            else:
+                raise RuntimeError('unhandled entity type: {}'.format(type(entity)))
 
         ordered_entities = graph.resolve(entities)
         for entity in ordered_entities:
