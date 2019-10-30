@@ -43,5 +43,10 @@
       ]
     }
   },
-  "publishings": {}
+  "publishings": {
+    "allocloud-buster": {
+      "distribution": "buster",
+      "snapshot": "allocloud_buster_pulls"
+    }
+  }
 }

@@ -315,6 +315,26 @@ class SnapshotPull(Snapshot):
         if not self.context.execute(extra_args + ['snapshot', 'pull'] + args):
             raise AptlyException()
 
+@dataclass
+class Publishing(Entity):
+    snapshot: str
+    distribution: Optional[str] = None
+
+    def format_snapshot(self):
+        return self.context.format('snapshot', self.snapshot)
+
+    def run(self):
+        if not self.context.execute(['publish', 'show', self.format_snapshot()], 1, False):
+            return
+
+        extra_args = []
+        if self.distribution:
+            extra_args.append('-distribution=%s' % shlex.quote(self.distribution))
+
+        args = [self.format_snapshot(), self.name]
+        if not self.context.execute(extra_args + ['publish', 'snapshot'] + args):
+            raise AptlyException()
+
 class EntityCollection(list):
     def search(self, name, classinfo):
         try:
@@ -341,3 +361,6 @@ class EntityCollection(list):
                 self.append(SnapshotMerge(name=name, context=context, **params))
             elif action == 'pull':
                 self.append(SnapshotPull(name=name, context=context, **params))
+
+        for name, params in schema.get('publishings').items():
+            self.append(Publishing(name=name, context=context, **params))

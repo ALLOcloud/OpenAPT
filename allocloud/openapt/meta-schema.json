@@ -107,6 +107,9 @@
               "snapshot": {
                 "type": "string"
               },
+              "distribution": {
+                "type": "string"
+              },
               "components": {
                 "$ref": "#/definitions/components"
               }

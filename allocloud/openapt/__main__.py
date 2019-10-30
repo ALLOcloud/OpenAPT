@@ -16,6 +16,7 @@ from allocloud.openapt.models import (
     SnapshotFilter,
     SnapshotMerge,
     SnapshotPull,
+    Publishing,
     Context,
 )
 
@@ -96,6 +97,8 @@ def main():
             elif isinstance(entity, SnapshotPull):
                 graph.add_dependency(entity, entities.search(entity.source, Snapshot))
                 graph.add_dependency(entity, entities.search(entity.to, Snapshot))
+            elif isinstance(entity, Publishing):
+                graph.add_dependency(entity, entities.search(entity.snapshot, Snapshot))
             elif isinstance(entity, (Mirror, Repository)):
                 pass
             else:
