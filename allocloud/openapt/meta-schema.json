@@ -19,6 +19,15 @@
       "items": {
         "$ref": "#/definitions/component"
       }
+    },
+    "packageQuery": {
+      "type": "string"
+    },
+    "packageQueries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/packageQuery"
+      }
     }
   },
   "type": "object",
@@ -206,6 +215,28 @@
               },
               "architectures": {
                 "$ref": "#/definitions/architectures"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "source",
+              "to",
+              "packageQueries"
+            ],
+            "properties": {
+              "type": {
+                "const": "pull"
+              },
+              "source": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "packageQueries": {
+                "$ref": "#/definitions/packageQueries"
               }
             }
           }

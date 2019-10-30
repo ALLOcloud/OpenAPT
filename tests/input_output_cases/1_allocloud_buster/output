@@ -1,0 +1,18 @@
+aptly repo show allocloud
+aptly repo create allocloud
+aptly mirror show debian_bullseye
+aptly -filter=python3-psycopg2 mirror create debian_bullseye http://deb.debian.org/debian bullseye
+aptly mirror update debian_bullseye
+aptly mirror show debian_buster
+aptly mirror create debian_buster http://deb.debian.org/debian buster
+aptly mirror update debian_buster
+aptly snapshot show {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_bullseye
+aptly snapshot create {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_bullseye from mirror debian_bullseye
+aptly snapshot show {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_buster
+aptly snapshot create {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_buster from mirror debian_buster
+aptly snapshot show {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud
+aptly snapshot create {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud from repo allocloud
+aptly snapshot show {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster
+aptly snapshot merge {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_buster {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud
+aptly snapshot show {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster_pulls
+aptly snapshot pull {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_bullseye {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster_pulls python3-psycopg2

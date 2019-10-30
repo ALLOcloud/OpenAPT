@@ -290,6 +290,31 @@ class SnapshotFilter(Snapshot):
         if not self.context.execute(extra_args + ['snapshot', 'filter', self.format_source(), self.format_name(), self.filter]):
             raise AptlyException()
 
+@dataclass
+class SnapshotPull(Snapshot):
+    source: str
+    to: str
+    packageQueries: List[str] = None
+    architectures: Optional[List[str]] = None
+
+    def format_source(self):
+        return self.context.format('snapshot', self.source)
+
+    def format_to(self):
+        return self.context.format('snapshot', self.to)
+
+    def run(self):
+        if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
+            return
+
+        extra_args = []
+        if self.architectures:
+            extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+
+        args = [self.format_to(), self.format_source(), self.format_name()] + self.packageQueries
+        if not self.context.execute(extra_args + ['snapshot', 'pull'] + args):
+            raise AptlyException()
+
 class EntityCollection(list):
     def search(self, name, classinfo):
         try:
@@ -314,3 +339,5 @@ class EntityCollection(list):
                 self.append(SnapshotFilter(name=name, context=context, **params))
             elif action == 'merge':
                 self.append(SnapshotMerge(name=name, context=context, **params))
+            elif action == 'pull':
+                self.append(SnapshotPull(name=name, context=context, **params))
