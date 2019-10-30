@@ -146,7 +146,8 @@ class Repository(Entity):
         if self.comment:
             extra_args.append('-comment=%s' % shlex.quote(self.comment))
 
-        if not self.context.execute(extra_args + ['repo', 'create', self.name]):
+        args = [self.name]
+        if not self.context.execute(extra_args + ['repo', 'create'] + args):
             raise AptlyException()
 
 @dataclass
@@ -182,10 +183,9 @@ class Mirror(Entity):
             if self.withUdebs:
                 extra_args.append('-with-udebs')
 
-            if not self.context.execute(
-                    extra_args
-                    + ['mirror', 'create', self.name, self.archive, self.distribution]
-                    + (self.components if self.components else [])):
+            components = self.components if self.components else []
+            args = [self.name, self.archive, self.distribution] + components
+            if not self.context.execute(extra_args + ['mirror', 'create'] + args):
                 raise AptlyException()
 
         if not self.context.execute(['mirror', 'update', self.name]):
@@ -263,7 +263,8 @@ class SnapshotMerge(Snapshot):
         if self.noRemove:
             extra_args.append('-no-remove')
 
-        if not self.context.execute(extra_args + ['snapshot', 'merge', self.format_name()] + self.format_sources()):
+        args = [self.format_name()] + self.format_sources()
+        if not self.context.execute(extra_args + ['snapshot', 'merge'] + args):
             raise AptlyException()
 
 @dataclass
@@ -287,7 +288,8 @@ class SnapshotFilter(Snapshot):
         if self.withDeps:
             extra_args.append('-with-deps')
 
-        if not self.context.execute(extra_args + ['snapshot', 'filter', self.format_source(), self.format_name(), self.filter]):
+        args = [self.format_source(), self.format_name(), self.filter]
+        if not self.context.execute(extra_args + ['snapshot', 'filter'] + args):
             raise AptlyException()
 
 @dataclass
