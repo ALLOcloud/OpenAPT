@@ -50,6 +50,7 @@ def cases(basedir):
     return _cases
 
 CASES = cases(Path(__file__).parent / 'e2e' / 'cases')
+TEST_PACKAGE = Path(__file__).parent / 'e2e' / 'allocloud-test_1.0_all.deb'
 
 @pytest.mark.parametrize('case', CASES)
 def test_input_output(case):
@@ -70,13 +71,11 @@ def test_input_output(case):
     context.execute = wrap_context_execute(context.execute)
 
     if not context.dry_run:
-        subprocess.run(['equivs-build', '/app/allocloud-test'], check=True)
         subprocess.run(['sudo', 'rm', '-rf', '/aptly'], check=True)
         subprocess.run(['sudo', 'mkdir', '/aptly'], check=True)
         subprocess.run(['sudo', 'chmod', '777', '/aptly'], check=True)
         assert context.execute(['repo', 'create', 'allocloud'], 0)
-        assert context.execute(['repo', 'add', 'allocloud', '/app/allocloud-test_1.0_all.deb'], 0)
-        subprocess.run(['rm', '-rf', '/app/allocloud-test_1.0_all.deb'], check=True)
+        assert context.execute(['repo', 'add', 'allocloud', str(TEST_PACKAGE)], 0)
 
     formatter = NameFormatter()
     case.expected_output = formatter.format(
