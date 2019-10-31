@@ -6,7 +6,8 @@
   "mirrors": {
     "debian_buster": {
       "archive": "http://deb.debian.org/debian",
-      "distribution": "buster"
+      "distribution": "buster",
+      "filter": "python3-psycopg2 | python3-aiopg"
     },
     "debian_bullseye": {
       "archive": "http://deb.debian.org/debian",
@@ -40,6 +41,9 @@
       "to": "allocloud_buster",
       "packageQueries": [
         "python3-psycopg2"
+      ],
+      "architectures": [
+        "amd64"
       ]
     }
   },
