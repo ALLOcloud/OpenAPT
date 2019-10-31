@@ -49,7 +49,7 @@ def cases(basedir):
                 _cases.append(_case)
     return _cases
 
-CASES = cases(Path(__file__).parent / 'input_output_cases')
+CASES = cases(Path(__file__).parent / 'e2e' / 'cases')
 
 @pytest.mark.parametrize('case', CASES)
 def test_input_output(case):
