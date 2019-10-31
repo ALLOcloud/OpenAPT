@@ -50,7 +50,7 @@ class Context():
         execute = [(self.binary if self.binary else 'aptly')]
 
         if self.config:
-            execute.append('-config=%s' % shlex.quote(self.config))
+            execute.append('-config=%s' % self.config)
 
         return execute + args
 
@@ -71,7 +71,7 @@ class Context():
     def execute(self, args, expected_code=0, log_output=True):
         execute = self.command(args)
 
-        LOGGER.info(' '.join(execute))
+        LOGGER.info(' '.join(['='.join([shlex.quote(part) for part in term.split('=', 1)]) for term in execute]))
 
         if self.dry_run:
             return True
@@ -135,16 +135,16 @@ class Repository(Entity):
 
         extra_args = []
         if self.distribution:
-            extra_args.append('-distribution=%s' % shlex.quote(self.distribution))
+            extra_args.append('-distribution=%s' % self.distribution)
 
         if self.architectures:
-            extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+            extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
         if self.component:
-            extra_args.append('-component=%s' % shlex.quote(self.component))
+            extra_args.append('-component=%s' % self.component)
 
         if self.comment:
-            extra_args.append('-comment=%s' % shlex.quote(self.comment))
+            extra_args.append('-comment=%s' % self.comment)
 
         args = [self.name]
         if not self.context.execute(extra_args + ['repo', 'create'] + args):
@@ -169,10 +169,10 @@ class Mirror(Entity):
         if self.context.execute(['mirror', 'show', self.name], 1, False):
             extra_args = []
             if self.architectures:
-                extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+                extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
             if self.filter:
-                extra_args.append('-filter=%s' % shlex.quote(self.filter))
+                extra_args.append("-filter=%s" % self.filter)
 
             if self.filterWithDeps:
                 extra_args.append('-filter-with-deps')
@@ -216,7 +216,7 @@ class SnapshotRepository(Snapshot):
 
         extra_args = []
         if self.architectures:
-            extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+            extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
         if not self.context.execute(
                 extra_args + ['snapshot', 'create', self.format_name(), 'from', 'repo', self.repository]):
@@ -233,7 +233,7 @@ class SnapshotMirror(Snapshot):
 
         extra_args = []
         if self.architectures:
-            extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+            extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
         if not self.context.execute(
                 extra_args + ['snapshot', 'create', self.format_name(), 'from', 'mirror', self.mirror]):
@@ -255,7 +255,7 @@ class SnapshotMerge(Snapshot):
 
         extra_args = []
         if self.architectures:
-            extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+            extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
         if self.latest:
             extra_args.append('-latest')
@@ -283,7 +283,7 @@ class SnapshotFilter(Snapshot):
 
         extra_args = []
         if self.architectures:
-            extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+            extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
         if self.withDeps:
             extra_args.append('-with-deps')
@@ -311,7 +311,7 @@ class SnapshotPull(Snapshot):
 
         extra_args = []
         if self.architectures:
-            extra_args.append('-architectures=%s' % shlex.quote(','.join(self.architectures)))
+            extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
         args = [self.format_to(), self.format_source(), self.format_name()] + self.packageQueries
         if not self.context.execute(extra_args + ['snapshot', 'pull'] + args):
@@ -331,7 +331,7 @@ class Publishing(Entity):
 
         extra_args = []
         if self.distribution:
-            extra_args.append('-distribution=%s' % shlex.quote(self.distribution))
+            extra_args.append('-distribution=%s' % self.distribution)
 
         args = [self.format_snapshot(), self.name]
         if not self.context.execute(extra_args + ['publish', 'snapshot'] + args):
