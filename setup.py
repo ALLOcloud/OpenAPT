@@ -3,7 +3,7 @@
 from setuptools import setup, find_namespace_packages
 
 setup(
-    name='allocloud.openapt',
+    name='openapt',
     version='0.1.0',
     description='Specify and automate APT repository management.',
     author='Raphael Medaer',
@@ -30,7 +30,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'allocloud.openapt = allocloud.openapt.__main__:main',
+            'openapt = allocloud.openapt.__main__:main',
         ]
     },
 )

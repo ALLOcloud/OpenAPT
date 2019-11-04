@@ -1,4 +1,4 @@
-Source: allocloud-openapt
+Source: openapt
 Section: misc
 Priority: optional
 Maintainer: Raphael Medaer <raphael.medaer@allocloud.com>
@@ -20,7 +20,7 @@ Vcs-Browser: https://gitlab.allocloud.com/allocloud/openapt
 Vcs-Git: https://gitlab.allocloud.com/allocloud/openapt.git
 #Testsuite: autopkgtest-pkg-python
 
-Package: allocloud-openapt
+Package: openapt
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python3-jsonschema
 Description: Specify and automate APT repository management
