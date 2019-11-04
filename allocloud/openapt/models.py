@@ -1,6 +1,4 @@
-import errno
 import shlex
-import select
 import random
 import logging
 import subprocess
@@ -77,31 +75,15 @@ class Context():
             return True
 
         process = subprocess.Popen(execute, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        while process.poll() is None:
-            files = [process.stdout, process.stderr]
-            while files:
-                try:
-                    streams, _, _ = select.select(files, [], [])
-                except select.error as err:
-                    if err.args[0] == errno.EINTR:
-                        continue
-                    raise
-
-                if process.stderr in streams:
-                    output = process.stderr.readline().decode()
-                    if not output:
-                        process.stderr.close()
-                        files.remove(process.stderr)
-                    elif log_output:
-                        LOGGER.error(output.rstrip('\n'))
-
-                if process.stdout in streams:
-                    output = process.stdout.readline().decode()
-                    if not output:
-                        process.stdout.close()
-                        files.remove(process.stdout)
-                    elif log_output:
-                        LOGGER.debug(output.rstrip('\n'))
+        while True:
+            _output = process.stdout.readline()
+            _error = process.stdout.readline()
+            if not _output and not _error and process.poll() is not None:
+                break
+            if log_output and _output:
+                LOGGER.debug(_output.strip())
+            if log_output and _error:
+                LOGGER.error(_error.strip())
 
         return process.returncode == expected_code
 
