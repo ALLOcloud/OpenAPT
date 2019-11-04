@@ -29,9 +29,6 @@
     "allocloud_filtered": {
       "type": "filter",
       "source": "allocloud",
-      "architectures": [
-        "amd64"
-      ],
       "filter": "toilet",
       "withDeps": true
     }

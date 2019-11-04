@@ -41,9 +41,6 @@
       "to": "allocloud_buster",
       "packageQueries": [
         "python3-psycopg2"
-      ],
-      "architectures": [
-        "amd64"
       ]
     }
   },

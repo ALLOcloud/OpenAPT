@@ -4,7 +4,7 @@ aptly mirror update debian_buster
 aptly snapshot show allocloud
 aptly snapshot create allocloud from repo allocloud
 aptly snapshot show allocloud_filtered
-aptly -architectures=amd64 -with-deps snapshot filter allocloud allocloud_filtered toilet
+aptly -with-deps snapshot filter allocloud allocloud_filtered toilet
 aptly snapshot show buster
 aptly snapshot create buster from mirror debian_buster
 aptly snapshot show openapt
