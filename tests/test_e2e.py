@@ -1,8 +1,9 @@
 import unittest.mock
 import logging
+import tempfile
+import pkgutil
 import sys
 import shutil
-import subprocess
 import os
 import io
 import json
@@ -51,6 +52,7 @@ def cases(basedir):
 
 CASES = cases(Path(__file__).parent / 'e2e' / 'cases')
 TEST_PACKAGE = Path(__file__).parent / 'e2e' / 'allocloud-test_1.0_all.deb'
+APTLY_CONF_TEMPLATE = json.loads(pkgutil.get_data('e2e', 'aptly.conf'))
 
 @pytest.mark.parametrize('case', CASES)
 def test_input_output(case):
@@ -61,48 +63,49 @@ def test_input_output(case):
             return func(_args, *args, **kwargs)
         return wrapped
 
-    context = Context(
-        config=None,
-        dry_run=shutil.which('aptly') is None,
-        formats={
-            'snapshot': case.options.get('--snapshot-subst', '{name}'),
-        },
-    )
-    context.execute = wrap_context_execute(context.execute)
+    with tempfile.TemporaryDirectory() as root_dir:
+        with open(Path(root_dir) / 'aptly.conf', 'w+') as f:
+            f.write(json.dumps({**APTLY_CONF_TEMPLATE, 'rootDir': root_dir}))
 
-    if not context.dry_run:
-        subprocess.run(['sudo', 'rm', '-rf', '/aptly'], check=True)
-        subprocess.run(['sudo', 'mkdir', '/aptly'], check=True)
-        subprocess.run(['sudo', 'chmod', '777', '/aptly'], check=True)
-        assert context.execute(['repo', 'create', 'allocloud'], 0)
-        assert context.execute(['repo', 'add', 'allocloud', str(TEST_PACKAGE)], 0)
+        context = Context(
+            config=f.name,
+            dry_run=shutil.which('aptly') is None,
+            formats={
+                'snapshot': case.options.get('--snapshot-subst', '{name}'),
+            },
+        )
+        context.execute = wrap_context_execute(context.execute)
+        formatter = NameFormatter()
+        case.expected_output = formatter.format(
+            case.expected_output,
+            now=context.now,
+            random=context.random,
+        )
 
-    formatter = NameFormatter()
-    case.expected_output = formatter.format(
-        case.expected_output,
-        now=context.now,
-        random=context.random,
-    )
+        if not context.dry_run:
+            assert context.execute(['repo', 'create', 'allocloud'], 0)
+            assert context.execute(['repo', 'add', 'allocloud', str(TEST_PACKAGE)], 0)
 
-    with unittest.mock.patch('allocloud.openapt.__main__.Context') as MockContext:
-        MockContext.return_value = context
+        with unittest.mock.patch('allocloud.openapt.__main__.Context') as MockContext:
+            MockContext.return_value = context
 
-        log_string = io.StringIO()
-        handler = logging.StreamHandler(log_string)
-        handler.setLevel(logging.INFO)
-        handler.addFilter(LogLevelFilter(logging.INFO))
-        LOGGER.setLevel(logging.DEBUG)
+            log_string = io.StringIO()
+            handler = logging.StreamHandler(log_string)
+            handler.setLevel(logging.INFO)
+            handler.addFilter(LogLevelFilter(logging.INFO))
+            LOGGER.setLevel(logging.DEBUG)
 
-        LOGGER.addHandler(handler)
-        sys.argv.append(case.input_path)
-        try:
-            main()
-        finally:
-            sys.argv.pop()
-            LOGGER.removeHandler(handler)
-            LOGGER.setLevel(logging.NOTSET)
+            LOGGER.addHandler(handler)
+            sys.argv.append(case.input_path)
+            try:
+                main()
+            finally:
+                sys.argv.pop()
+                LOGGER.removeHandler(handler)
+                LOGGER.setLevel(logging.NOTSET)
 
-        log_contents = log_string.getvalue()
-        log_string.close()
+            log_contents = log_string.getvalue()
+            log_contents = log_contents.replace(f' -config={f.name}', '')
+            log_string.close()
 
-        assert log_contents == case.expected_output
+            assert log_contents == case.expected_output
