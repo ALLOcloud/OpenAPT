@@ -1,6 +1,11 @@
 class OAException(Exception):
     pass
 
+class SchemaParseException(OAException):
+    def __init__(self, errors):
+        super(SchemaParseException, self).__init__('Invalid schema')
+        self.errors = errors
+
 class AptlyException(OAException):
     def __init__(self):
         super(AptlyException, self).__init__('Failed to execute aptly command')

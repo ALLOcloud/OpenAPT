@@ -2,7 +2,6 @@ import unittest.mock
 import logging
 import tempfile
 import pkgutil
-import sys
 import shutil
 import os
 import io
@@ -14,7 +13,7 @@ from typing import Mapping
 import pytest
 
 from allocloud.openapt.models import LOGGER, Context, NameFormatter
-from allocloud.openapt.__main__ import main
+from allocloud.openapt import run
 
 class LogLevelFilter:
     def __init__(self, level):
@@ -55,7 +54,7 @@ TEST_PACKAGE = Path(__file__).parent / 'e2e' / 'allocloud-test_1.0_all.deb'
 APTLY_CONF_TEMPLATE = json.loads(pkgutil.get_data('e2e', 'aptly.conf'))
 
 @pytest.mark.parametrize('case', CASES)
-def test_input_output(case):
+def test_e2e(case):
     def wrap_context_execute(func):
         def wrapped(_args, *args, **kwargs):
             if _args[:2] == ['repo', 'show']:
@@ -86,7 +85,7 @@ def test_input_output(case):
             assert context.execute(['repo', 'create', 'allocloud'], 0)
             assert context.execute(['repo', 'add', 'allocloud', str(TEST_PACKAGE)], 0)
 
-        with unittest.mock.patch('allocloud.openapt.__main__.Context') as MockContext:
+        with unittest.mock.patch('allocloud.openapt.Context') as MockContext:
             MockContext.return_value = context
 
             log_string = io.StringIO()
@@ -96,11 +95,9 @@ def test_input_output(case):
             LOGGER.setLevel(logging.DEBUG)
 
             LOGGER.addHandler(handler)
-            sys.argv.append(case.input_path)
             try:
-                main()
+                run(case.input_path)
             finally:
-                sys.argv.pop()
                 LOGGER.removeHandler(handler)
                 LOGGER.setLevel(logging.NOTSET)
 
