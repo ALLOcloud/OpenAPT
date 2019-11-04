@@ -92,8 +92,8 @@ def test_e2e(case):
             handler = logging.StreamHandler(log_string)
             handler.setLevel(logging.INFO)
             handler.addFilter(LogLevelFilter(logging.INFO))
-            LOGGER.setLevel(logging.DEBUG)
 
+            LOGGER.setLevel(logging.DEBUG)
             LOGGER.addHandler(handler)
             try:
                 run(case.input_path)

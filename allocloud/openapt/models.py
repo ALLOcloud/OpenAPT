@@ -77,13 +77,13 @@ class Context():
         process = subprocess.Popen(execute, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while True:
             _output = process.stdout.readline()
-            _error = process.stdout.readline()
+            _error = process.stderr.readline()
             if not _output and not _error and process.poll() is not None:
                 break
             if log_output and _output:
-                LOGGER.debug(_output.strip())
+                LOGGER.debug(_output.strip().decode())
             if log_output and _error:
-                LOGGER.error(_error.strip())
+                LOGGER.error(_error.strip().decode())
 
         return process.returncode == expected_code
 
