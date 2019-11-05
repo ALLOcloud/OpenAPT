@@ -1,4 +1,5 @@
 import unittest.mock
+import sys
 import logging
 import tempfile
 import pkgutil
@@ -12,8 +13,8 @@ from typing import Mapping
 
 import pytest
 
-from allocloud.openapt.models import LOGGER, Context, NameFormatter
-from allocloud.openapt import run
+from allocloud.openapt.models import Context, NameFormatter
+from allocloud.openapt import setup_logging, run
 
 @dataclass
 class Case:
@@ -83,20 +84,9 @@ def test_e2e(case, caplog):
         with unittest.mock.patch('allocloud.openapt.Context') as MockContext:
             MockContext.return_value = context
 
-            log_string = io.StringIO()
-            handler = logging.StreamHandler(log_string)
-            handler.setLevel(logging.INFO)
+            sys.stdout = io.StringIO()
+            setup_logging(dry_run=True)
+            run(case.input_path)
 
-            LOGGER.setLevel(logging.DEBUG)
-            LOGGER.addHandler(handler)
-            try:
-                run(case.input_path)
-            finally:
-                LOGGER.removeHandler(handler)
-                LOGGER.setLevel(logging.NOTSET)
-
-            log_contents = log_string.getvalue()
-            log_contents = log_contents.replace(f' -config={f.name}', '')
-            log_string.close()
-
-            assert log_contents == case.expected_output
+            stdout_result = sys.stdout.getvalue().replace(f' -config={f.name}', '')
+            assert stdout_result == case.expected_output

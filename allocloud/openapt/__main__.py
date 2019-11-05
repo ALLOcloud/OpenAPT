@@ -3,7 +3,7 @@ import logging
 from argparse import ArgumentParser
 
 from allocloud.openapt.errors import SchemaParseException, OAException
-from . import run
+from . import setup_logging, run
 
 
 LOGGER = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ def main():
     )
     args = vars(parser.parse_args())
 
-    logging.basicConfig(level=logging.DEBUG if args['debug'] else logging.WARNING, format='%(message)s')
+    setup_logging(**args)
 
     try:
         run(**args)

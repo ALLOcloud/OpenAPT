@@ -30,10 +30,10 @@ def run_command(command, stdout=None, stderr=None, log_output=False):
                         if log_output:
                             if fd == process.stdout.fileno(): # We caught stdout
                                 for line in data.rstrip().split(b'\n'):
-                                    LOGGER.debug(line.decode(), {'std': 'stdout'})
+                                    LOGGER.debug(line.decode())
                             else: # We caught stderr
                                 for line in data.rstrip().split(b'\n'):
-                                    LOGGER.debug(line.decode(), {'std': 'stderr'})
+                                    LOGGER.error(line.decode())
                         if readable[fd]:
                             readable[fd].write(data)
                             readable[fd].flush()

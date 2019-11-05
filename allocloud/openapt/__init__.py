@@ -1,3 +1,5 @@
+import sys
+import logging
 import json
 from pkg_resources import resource_string
 
@@ -21,6 +23,37 @@ from allocloud.openapt.models import (
 
 
 META_SCHEMA = json.loads(resource_string(__name__, 'meta-schema.json'))
+
+
+class LogLevelFilter:
+    def __init__(self, level):
+        self.level = level
+
+    def filter(self, record):
+        return record.levelno <= self.level
+
+
+def setup_logging(dry_run=False, debug=False, **kwargs):
+    level = logging.WARNING
+    if dry_run:
+        level = logging.INFO
+    if debug:
+        level = logging.DEBUG
+
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(message)s')
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(level)
+    handler.setFormatter(formatter)
+    handler.addFilter(LogLevelFilter(logging.INFO))
+    root.addHandler(handler)
+
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setLevel(logging.WARNING)
+    handler.setFormatter(formatter)
+    root.addHandler(handler)
 
 
 def run(schema, config=None, snapshot_subst=None, dry_run=False, **kwargs):
