@@ -292,14 +292,14 @@ class SnapshotPull(Snapshot):
 @dataclass
 class Publishing(Entity):
     snapshot: str
-    distribution: Optional[str] = None
+    distribution: str
     forceOverwrite: bool = False
 
     def format_snapshot(self):
         return self.context.format('snapshot', self.snapshot)
 
     def run(self):
-        if not self.context.execute(['publish', 'show', self.format_snapshot()], 1, False):
+        if not self.context.execute(['publish', 'show', self.distribution, self.name], 1, False):
             return
 
         extra_args = []

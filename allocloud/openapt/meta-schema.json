@@ -101,7 +101,8 @@
           {
             "type": "object",
             "required": [
-              "snapshot"
+              "snapshot",
+              "distribution"
             ],
             "properties": {
               "snapshot": {
