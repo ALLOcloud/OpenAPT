@@ -293,6 +293,7 @@ class SnapshotPull(Snapshot):
 class Publishing(Entity):
     snapshot: str
     distribution: Optional[str] = None
+    forceOverwrite: bool = False
 
     def format_snapshot(self):
         return self.context.format('snapshot', self.snapshot)
@@ -304,6 +305,9 @@ class Publishing(Entity):
         extra_args = []
         if self.distribution:
             extra_args.append('-distribution=%s' % self.distribution)
+
+        if self.forceOverwrite:
+            extra_args.append('-force-overwrite')
 
         args = [self.format_snapshot(), self.name]
         if not self.context.execute(extra_args + ['publish', 'snapshot'] + args):
