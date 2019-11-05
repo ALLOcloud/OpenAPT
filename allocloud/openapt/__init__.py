@@ -90,7 +90,7 @@ def run(schema, config=None, snapshot_subst=None, dry_run=False, **kwargs):
                 graph.add_dependency(entity, entities.search(source, Snapshot))
         elif isinstance(entity, SnapshotPull):
             graph.add_dependency(entity, entities.search(entity.source, Snapshot))
-            graph.add_dependency(entity, entities.search(entity.to, Snapshot))
+            graph.add_dependency(entity, entities.search(entity.recipient, Snapshot))
         elif isinstance(entity, Publishing):
             graph.add_dependency(entity, entities.search(entity.snapshot, Snapshot))
         elif isinstance(entity, (Mirror, Repository)):

@@ -225,7 +225,7 @@
             "required": [
               "type",
               "source",
-              "to",
+              "recipient",
               "packageQueries"
             ],
             "properties": {
@@ -235,7 +235,7 @@
               "source": {
                 "type": "string"
               },
-              "to": {
+              "recipient": {
                 "type": "string"
               },
               "packageQueries": {

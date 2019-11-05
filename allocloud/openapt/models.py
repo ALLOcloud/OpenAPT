@@ -267,15 +267,15 @@ class SnapshotFilter(Snapshot):
 @dataclass
 class SnapshotPull(Snapshot):
     source: str
-    to: str
+    recipient: str
     packageQueries: List[str] = None
     architectures: Optional[List[str]] = None
 
     def format_source(self):
         return self.context.format('snapshot', self.source)
 
-    def format_to(self):
-        return self.context.format('snapshot', self.to)
+    def format_recipient(self):
+        return self.context.format('snapshot', self.recipient)
 
     def run(self):
         if not self.context.execute(['snapshot', 'show', self.format_name()], 1, False):
@@ -285,7 +285,7 @@ class SnapshotPull(Snapshot):
         if self.architectures:
             extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
-        args = [self.format_to(), self.format_source(), self.format_name()] + self.packageQueries
+        args = [self.format_recipient(), self.format_source(), self.format_name()] + self.packageQueries
         if not self.context.execute(extra_args + ['snapshot', 'pull'] + args):
             raise AptlyException()
 
