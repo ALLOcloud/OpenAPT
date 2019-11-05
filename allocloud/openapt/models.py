@@ -1,7 +1,6 @@
 import shlex
 import random
 import logging
-import subprocess
 import string
 from string import Formatter
 from datetime import datetime
@@ -9,6 +8,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 from dataclasses import dataclass
 from allocloud.openapt.errors import EntityNotFoundException, AptlyException
+from allocloud.openapt.commands import run_command
 
 LOGGER = logging.getLogger(__name__)
 
@@ -74,17 +74,7 @@ class Context():
         if self.dry_run:
             return True
 
-        process = subprocess.Popen(execute, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        while True:
-            _output = process.stdout.readline()
-            _error = process.stderr.readline()
-            if not _output and not _error and process.poll() is not None:
-                break
-            if log_output and _output:
-                LOGGER.debug(_output.strip().decode())
-            if log_output and _error:
-                LOGGER.error(_error.strip().decode())
-
+        process = run_command(execute, log_output=log_output)
         return process.returncode == expected_code
 
 @dataclass

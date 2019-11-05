@@ -15,13 +15,6 @@ import pytest
 from allocloud.openapt.models import LOGGER, Context, NameFormatter
 from allocloud.openapt import run
 
-class LogLevelFilter:
-    def __init__(self, level):
-        self._level = level
-
-    def filter(self, record):
-        return record.levelno <= self._level
-
 @dataclass
 class Case:
     input_path: str
@@ -54,7 +47,9 @@ TEST_PACKAGE = Path(__file__).parent / 'e2e' / 'allocloud-test_1.0_all.deb'
 APTLY_CONF_TEMPLATE = json.loads(pkgutil.get_data('e2e', 'aptly.conf'))
 
 @pytest.mark.parametrize('case', CASES)
-def test_e2e(case):
+def test_e2e(case, caplog):
+    caplog.set_level(logging.DEBUG)
+
     def wrap_context_execute(func):
         def wrapped(_args, *args, **kwargs):
             if _args[:2] == ['repo', 'show']:
@@ -91,7 +86,6 @@ def test_e2e(case):
             log_string = io.StringIO()
             handler = logging.StreamHandler(log_string)
             handler.setLevel(logging.INFO)
-            handler.addFilter(LogLevelFilter(logging.INFO))
 
             LOGGER.setLevel(logging.DEBUG)
             LOGGER.addHandler(handler)
