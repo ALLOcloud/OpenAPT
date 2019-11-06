@@ -1,74 +1,93 @@
 OpenAPT
 =======
 
-OpenAPT is a description format for APT packages repositories.  
-An OpenAPT file allows you to describe the objects and relationships you need to publish and maintain custom repositories through:
+OpenAPT is a description format for APT repositories.
+An OpenAPT file allows you to describe the objects and relationships you need to maintain custom APT repositories through:
 
-* Repositories (a custom set of packages)
+* (Local) Repositories
 * Mirrors
 * Snapshots
 * Publishings
 
-## Concepts
+Most of the concepts and workflows used are borrowed from [aptly entities and transitions](https://www.aptly.info/doc/overview/).
 
-Currently, most of the concepts used are borrowed to [aptly](https://www.aptly.info/) project nomenclature.  
-And under the hood, `openapt` is building all the commands to call `aptly` CLI.
+## Specifications
 
-```
-user@machine:~$ openapt file.json
-```
-
-**TODO**: describe CLI (`--dry-run`, `--debug`, `--snapshot-subst`...)
-
-## File structure
-
-An OpenAPT file is basically a JSON file and looks like the following:
+An OpenAPT schema is nothing more than a structured JSON file and looks like the following:
 
 ```json
 {
   "repositories": {
-    "allocloud": {
+    "mylocalrepo": {
     }
   },
   "mirrors": {
     "debian_buster": {
       "archive": "http://deb.debian.org/debian",
-      "distribution": "buster",
-      "filter": "toilet"
+      "distribution": "buster"
     }
   },
   "snapshots": {
-    "allocloud": {
+    "mylocalrepo": {
       "type": "create",
-      "repository": "allocloud"
+      "repository": "mylocalrepo"
     },
     "buster": {
       "type": "create",
       "mirror": "debian_buster"
     },
-    "openapt": {
+    "mydistro": {
       "type": "merge",
       "sources": [
-        "allocloud_filtered",
-        "buster"
+        "buster_filtered",
+        "mylocalrepo"
       ]
     },
-    "allocloud_filtered": {
+    "buster_filtered": {
       "type": "filter",
-      "source": "allocloud",
+      "source": "buster",
       "filter": "toilet",
       "withDeps": true
     }
   },
   "publishings": {
-    "openapt": {
-      "snapshot": "openapt"
+    "public": {
+      "snapshot": "mydistro",
+      "distribution": "buster"
     }
   }
 }
 ```
 
-This file is validated against a meta-schema that you can find [here](https://gitlab.eyepea.eu/allocloud/openapt/blob/develop/allocloud/openapt/meta-schema.json).
+This file is validated [using a meta-schema](allocloud/openapt/meta-schema.json).
+
+## Implementation
+
+Under the hood, `openapt` is forging `aptly` commands and call its CLI.
+
+Usage:
+
+```
+usage: openapt [-h] [--debug] [--config <file>] [--dry-run]
+               [--snapshot-subst <template>]
+               <schema>
+
+OpenAPT Aptly implementation.
+
+positional arguments:
+  <schema>
+
+optional arguments:
+  -h, --help                   show this help message and exit
+  --debug
+  --config <file>
+  --dry-run
+  --snapshot-subst <template>  formating string for snapshots (e.g. "{now:date:%Y%d%m_%H%M%S}_{random:.8s}_{name}")
+```
+
+## Alternatives
+
+  * [pyaptly](https://github.com/adfinis-sygroup/pyaptly)
 
 ## Test
 

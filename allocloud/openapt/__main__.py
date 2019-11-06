@@ -33,7 +33,7 @@ def main():
         '--snapshot-subst',
         required=False,
         metavar='<template>',
-        help='Formating string for snapshots (e.g. "{now:date:%%Y%%d%%m_%%H%%M%%S}_{random:.8s}_{name}")',
+        help='formating string for snapshots (e.g. "{now:date:%%Y%%d%%m_%%H%%M%%S}_{random:.8s}_{name}")',
     )
     parser.add_argument(
         'schema',
