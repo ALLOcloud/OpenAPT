@@ -85,6 +85,12 @@ optional arguments:
   --snapshot-subst <template>  formating string for snapshots (e.g. "{now:date:%Y%d%m_%H%M%S}_{random:.8s}_{name}")
 ```
 
+Example:
+
+```
+openapt --config=aptly.conf --debug myshema.json
+```
+
 ## Alternatives
 
   * [pyaptly](https://github.com/adfinis-sygroup/pyaptly)
