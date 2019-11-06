@@ -4,10 +4,12 @@ Source: https://gitlab.allocloud.com/allocloud/openapt
 
 Files: *
 Copyright: 2019 Raphael Medaer <raphael.medaer@allocloud.com>
+           2019 Hubert Lobit <hubert.lobit@allocloud.com>
 License: Apache-2.0
 
 Files: debian/*
 Copyright: 2019 Raphael Medaer <raphael.medaer@allocloud.com>
+           2019 Hubert Lobit <hubert.lobit@allocloud.com>
 License: Apache-2.0
 
 License: Apache-2.0
