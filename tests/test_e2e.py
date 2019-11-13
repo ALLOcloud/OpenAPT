@@ -1,5 +1,4 @@
 import unittest.mock
-import sys
 import logging
 import tempfile
 import pkgutil
@@ -14,7 +13,7 @@ from typing import Mapping
 import pytest
 
 from allocloud.openapt.models import Context, NameFormatter
-from allocloud.openapt import setup_logging, run
+from allocloud.openapt import create_stream_handler, setup_logging, run
 
 @dataclass
 class Case:
@@ -56,6 +55,7 @@ APTLY_CONF_TEMPLATE = json.loads(pkgutil.get_data('e2e', 'aptly.conf'))
 
 @pytest.mark.parametrize('case', CASES)
 def test_e2e(case, caplog):
+    setup_logging()
     caplog.set_level(logging.DEBUG)
 
     def wrap_context_execute(func):
@@ -91,9 +91,18 @@ def test_e2e(case, caplog):
         with unittest.mock.patch('allocloud.openapt.Context') as MockContext:
             MockContext.return_value = context
 
-            sys.stdout = io.StringIO()
-            setup_logging(dry_run=True)
-            run(case.input_path)
+            log_string = io.StringIO()
+            handler = create_stream_handler(log_string, logging.INFO, max_level=logging.INFO)
 
-            stdout_result = sys.stdout.getvalue().replace(f' -config={f.name}', '')
-            assert stdout_result == case.expected_output
+            logger = logging.getLogger()
+            logger.addHandler(handler)
+            try:
+                run(case.input_path, limit=case.options.get('--limit'))
+            finally:
+                logger.removeHandler(handler)
+
+            log_contents = log_string.getvalue()
+            log_contents = log_contents.replace(f' -config={f.name}', '')
+            log_string.close()
+
+            assert log_contents == case.expected_output

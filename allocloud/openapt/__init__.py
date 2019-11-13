@@ -33,6 +33,15 @@ class LogLevelFilter:
         return record.levelno <= self.level
 
 
+def create_stream_handler(stream, level, fmt='%(message)s', max_level=None):
+    handler = logging.StreamHandler(stream)
+    handler.setLevel(level)
+    handler.setFormatter(logging.Formatter(fmt))
+    if max_level:
+        handler.addFilter(LogLevelFilter(max_level))
+    return handler
+
+
 def setup_logging(dry_run=False, debug=False, **kwargs):
     level = logging.WARNING
     if dry_run:
@@ -42,21 +51,25 @@ def setup_logging(dry_run=False, debug=False, **kwargs):
 
     root = logging.getLogger()
     root.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(message)s')
 
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(level)
-    handler.setFormatter(formatter)
-    handler.addFilter(LogLevelFilter(logging.INFO))
-    root.addHandler(handler)
-
-    handler = logging.StreamHandler(sys.stderr)
-    handler.setLevel(logging.WARNING)
-    handler.setFormatter(formatter)
-    root.addHandler(handler)
+    root.addHandler(create_stream_handler(sys.stdout, level, max_level=logging.INFO))
+    root.addHandler(create_stream_handler(sys.stderr, logging.WARNING))
 
 
-def run(schema, config=None, snapshot_subst=None, dry_run=False, **kwargs):
+def class_for(keyword):
+    if keyword == 'repository':
+        return Repository
+    if keyword == 'mirror':
+        return Mirror
+    if keyword == 'snapshot':
+        return Snapshot
+    if keyword == 'publishing':
+        return Publishing
+    raise ValueError('unknown keyword "{}"')
+
+
+# pylint:disable=too-many-locals
+def run(schema, config=None, snapshot_subst=None, dry_run=False, limit=None, **kwargs):
     with open(schema) as f:
         _schema = json.loads(f.read())
 
@@ -98,6 +111,9 @@ def run(schema, config=None, snapshot_subst=None, dry_run=False, **kwargs):
         else:
             raise RuntimeError('unhandled entity type: {}'.format(type(entity)))
 
-    ordered_entities = graph.resolve(entities)
+    root_entities = None
+    if limit:
+        root_entities = [entities.search(_limit.split(':')[1], class_for(_limit.split(':')[0])) for _limit in limit]
+    ordered_entities = graph.resolve(entities, root_entities)
     for entity in ordered_entities:
         entity.run()

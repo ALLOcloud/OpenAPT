@@ -1,0 +1,5 @@
+aptly mirror show debian_buster
+aptly -filter=toilet mirror create debian_buster http://deb.debian.org/debian buster
+aptly mirror update debian_buster
+aptly snapshot show buster
+aptly snapshot create buster from mirror debian_buster

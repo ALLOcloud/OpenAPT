@@ -70,6 +70,7 @@ Usage:
 ```
 usage: openapt [-h] [--debug] [--config <file>] [--dry-run]
                [--snapshot-subst <template>]
+               [--limit <limit-description>]
                <schema>
 
 OpenAPT Aptly implementation.
@@ -83,6 +84,7 @@ optional arguments:
   --config <file>
   --dry-run
   --snapshot-subst <template>  formating string for snapshots (e.g. "{now:date:%Y%d%m_%H%M%S}_{random:.8s}_{name}")
+  --limit <limit-description>  limit string (e.g. "publishing:mydistro")
 ```
 
 Example:

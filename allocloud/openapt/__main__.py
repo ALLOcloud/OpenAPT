@@ -36,6 +36,13 @@ def main():
         help='formating string for snapshots (e.g. "{now:date:%%Y%%d%%m_%%H%%M%%S}_{random:.8s}_{name}")',
     )
     parser.add_argument(
+        '--limit',
+        action='append',
+        required=False,
+        metavar='<limit-description>',
+        help='limit string (e.g. "publishing:mydistro")',
+    )
+    parser.add_argument(
         'schema',
         type=str,
         metavar='<schema>',
