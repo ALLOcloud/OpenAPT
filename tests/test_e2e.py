@@ -22,25 +22,32 @@ class Case:
     expected_output: str
     options: Mapping[str, str]
 
-def cases(basedir):
-    _cases = []
+def list_dirs(basedir):
     for subdir, dirs, _ in os.walk(basedir):
         if Path(subdir) == basedir:
             for _dir in dirs:
-                _options_path = basedir / _dir / 'options.json'
-                _input_path = basedir / _dir / 'input.json'
-                _output_path = basedir / _dir / 'output'
+                yield _dir
 
-                _options = {}
-                if _options_path.exists():
-                    with open(_options_path, 'r') as file:
-                        _options = json.load(file)
+def cases(basedir):
+    _cases = []
+    for _dir in list_dirs(basedir):
+        _case_dir = basedir / _dir
+        _input_path = _case_dir / 'input.json'
 
-                with open(_output_path, 'r') as file:
-                    _output = file.read()
+        for __dir in list_dirs(_case_dir):
+            _options_path = _case_dir / __dir / 'options.json'
+            _output_path = _case_dir / __dir / 'output'
 
-                _case = Case(input_path=str(_input_path), expected_output=_output, options=_options)
-                _cases.append(_case)
+            _options = {}
+            if _options_path.exists():
+                with open(_options_path, 'r') as file:
+                    _options = json.load(file)
+
+            with open(_output_path, 'r') as file:
+                _output = file.read()
+
+            _case = Case(input_path=str(_input_path), expected_output=_output, options=_options)
+            _cases.append(_case)
     return _cases
 
 CASES = cases(Path(__file__).parent / 'e2e' / 'cases')
