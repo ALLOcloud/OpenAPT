@@ -299,15 +299,18 @@ class Publishing(Entity):
         return self.context.format('snapshot', self.snapshot)
 
     def run(self):
-        if not self.context.execute(['publish', 'show', self.distribution, self.name], 1, False):
-            return
-
         extra_args = []
-        if self.distribution:
-            extra_args.append('-distribution=%s' % self.distribution)
-
         if self.forceOverwrite:
             extra_args.append('-force-overwrite')
+
+        if not self.context.execute(['publish', 'show', self.distribution, self.name], 1, False):
+            args = [self.distribution, self.name, self.format_snapshot()]
+            if not self.context.execute(extra_args + ['publish', 'switch'] + args):
+                raise AptlyException()
+            return
+
+        if self.distribution:
+            extra_args.append('-distribution=%s' % self.distribution)
 
         args = [self.format_snapshot(), self.name]
         if not self.context.execute(extra_args + ['publish', 'snapshot'] + args):
