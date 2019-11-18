@@ -65,7 +65,7 @@ def class_for(keyword):
         return Snapshot
     if keyword == 'publishing':
         return Publishing
-    raise ValueError('unknown keyword "{}"')
+    raise ValueError('unknown keyword "{}"'.format(keyword))
 
 
 # pylint:disable=too-many-locals
