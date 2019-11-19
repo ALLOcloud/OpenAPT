@@ -7,7 +7,7 @@ class Graph():
     def add_dependency(self, source, dependency):
         self.edges.append(source, dependency)
 
-    def _resolve(self, entities, root_entities=None):
+    def resolve(self, entities):
         # Resolving the dependency tree is done with Kahn's algorithm
 
         edges = self.edges.copy()
@@ -15,10 +15,7 @@ class Graph():
 
         # First we get a list with each entity which is not a dependency of another entity
         # These are "root" entities
-        sub_graph = True
-        if not root_entities:
-            sub_graph = False
-            root_entities = list(filter(lambda entity: edges.has_dependency(entity) is None, entities))
+        root_entities = list(filter(lambda entity: edges.has_dependency(entity) is None, entities))
 
         # For each root entity we find its dependencies and we add them self as a root dependency
         while root_entities:
@@ -33,7 +30,7 @@ class Graph():
                     root_entities.append(dependency)
 
         # If we still have edges in the graph, they are circular dependencies
-        if not sub_graph and not edges.empty():
+        if not edges.empty():
             raise CircularDependencyException() # TODO print a list of circular dependencies
 
         # We partially sort the result by entity priority, BUT we keep the order per type of entity.
@@ -44,11 +41,28 @@ class Graph():
 
         return sorted_entities
 
-    def resolve(self, entities, root_entities=None):
-        sorted_entities = self._resolve(entities)
-        if not root_entities:
-            return sorted_entities
-        return self._resolve(entities, root_entities)
+    def parents_of(self, entities):
+        edges = self.edges.copy()
+        sorted_entities = []
+
+        source_entities = entities.copy()
+
+        while source_entities:
+            entity = source_entities.pop()
+            sorted_entities.append(entity)
+            for source, dependency in edges.copy():
+                if source != entity:
+                    continue
+                source_entities.append(dependency)
+
+        # We partially sort the result by entity priority, BUT we keep the order per type of entity.
+        sorted_entities.sort(key=lambda entity: entity.priority)
+
+        # Finally we reverse the array since to execute command from bottom to top
+        sorted_entities.reverse()
+
+        return sorted_entities
+
 
 class EdgeCollection():
     def __init__(self, edges=None):

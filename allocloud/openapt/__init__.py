@@ -111,9 +111,9 @@ def run(schema, config=None, snapshot_subst=None, dry_run=False, limit=None, **k
         else:
             raise RuntimeError('unhandled entity type: {}'.format(type(entity)))
 
-    root_entities = None
+    ordered_entities = graph.resolve(entities)
     if limit:
-        root_entities = [entities.search(_limit.split(':')[1], class_for(_limit.split(':')[0])) for _limit in limit]
-    ordered_entities = graph.resolve(entities, root_entities)
+        entities = [entities.search(_limit.split(':')[1], class_for(_limit.split(':')[0])) for _limit in limit]
+        ordered_entities = graph.parents_of(entities)
     for entity in ordered_entities:
         entity.run()
