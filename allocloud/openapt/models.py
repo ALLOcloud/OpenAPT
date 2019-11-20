@@ -270,6 +270,8 @@ class SnapshotPull(Snapshot):
     recipient: str
     packageQueries: List[str] = None
     architectures: Optional[List[str]] = None
+    allMatches: bool = False
+    noRemove: bool = False
 
     def format_source(self):
         return self.context.format('snapshot', self.source)
@@ -284,6 +286,12 @@ class SnapshotPull(Snapshot):
         extra_args = []
         if self.architectures:
             extra_args.append('-architectures=%s' % ','.join(self.architectures))
+
+        if self.allMatches:
+            extra_args.append('-all-matches')
+
+        if self.noRemove:
+            extra_args.append('-no-remove')
 
         args = [self.format_recipient(), self.format_source(), self.format_name()] + self.packageQueries
         if not self.context.execute(extra_args + ['snapshot', 'pull'] + args):
