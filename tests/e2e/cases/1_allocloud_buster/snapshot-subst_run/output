@@ -1,3 +1,4 @@
+aptly repo show allocloud
 aptly mirror show debian_bullseye
 aptly -filter=python3-psycopg2 mirror create debian_bullseye http://deb.debian.org/debian bullseye
 aptly mirror update debian_bullseye

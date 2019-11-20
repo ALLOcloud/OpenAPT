@@ -1,3 +1,4 @@
+aptly repo show allocloud
 aptly mirror show debian_buster
 aptly -filter=toilet mirror create debian_buster http://deb.debian.org/debian buster
 aptly mirror update debian_buster
