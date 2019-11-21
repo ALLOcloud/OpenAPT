@@ -47,7 +47,7 @@
       "type": "pull",
       "source": "aptly",
       "recipient": "allocloud_buster",
-      "packageQueries": [
+      "filter": [
         "aptly"
       ]
     },
@@ -55,7 +55,7 @@
       "type": "pull",
       "source": "debian_bullseye",
       "recipient": "allocloud_buster",
-      "packageQueries": [
+      "filter": [
         "python3-psycopg2"
       ]
     },

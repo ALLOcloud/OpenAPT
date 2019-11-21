@@ -5,7 +5,7 @@ import string
 from string import Formatter
 from datetime import datetime
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Union, List, Optional
 from dataclasses import dataclass
 from allocloud.openapt.errors import EntityNotFoundException, AptlyException
 from allocloud.openapt.commands import run_command
@@ -13,6 +13,16 @@ from allocloud.openapt.commands import run_command
 LOGGER = logging.getLogger(__name__)
 
 SPEC_DATE = 'date:'
+
+PackageFilter = Union[str, List[str]]
+def filter_string(_filter: PackageFilter):
+    if isinstance(_filter, str):
+        return _filter
+    return " | ".join(['({})'.format(part) for part in _filter])
+def filter_array(_filter: PackageFilter):
+    if isinstance(_filter, str):
+        return [_filter]
+    return _filter
 
 class NameFormatter(Formatter):
     def __init__(self):
@@ -128,7 +138,7 @@ class Mirror(Entity):
     distribution: str
     components: Optional[List[str]] = None
     architectures: Optional[List[str]] = None
-    filter: Optional[str] = None
+    filter: Optional[PackageFilter] = None
     filterWithDeps: bool = False
     withSources: bool = False
     withUdebs: bool = False
@@ -144,7 +154,7 @@ class Mirror(Entity):
                 extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
             if self.filter:
-                extra_args.append("-filter=%s" % self.filter)
+                extra_args.append("-filter=%s" % filter_string(self.filter))
 
             if self.filterWithDeps:
                 extra_args.append('-filter-with-deps')
@@ -242,7 +252,7 @@ class SnapshotMerge(Snapshot):
 @dataclass
 class SnapshotFilter(Snapshot):
     source: str
-    filter: str
+    filter: PackageFilter
     architectures: Optional[List[str]] = None
     withDeps: bool = False
 
@@ -260,7 +270,7 @@ class SnapshotFilter(Snapshot):
         if self.withDeps:
             extra_args.append('-with-deps')
 
-        args = [self.format_source(), self.format_name(), self.filter]
+        args = [self.format_source(), self.format_name(), filter_string(self.filter)]
         if not self.context.execute(extra_args + ['snapshot', 'filter'] + args):
             raise AptlyException()
 
@@ -268,7 +278,7 @@ class SnapshotFilter(Snapshot):
 class SnapshotPull(Snapshot):
     source: str
     recipient: str
-    packageQueries: List[str] = None
+    filter: PackageFilter
     architectures: Optional[List[str]] = None
     allMatches: bool = False
     noRemove: bool = False
@@ -293,7 +303,7 @@ class SnapshotPull(Snapshot):
         if self.noRemove:
             extra_args.append('-no-remove')
 
-        args = [self.format_recipient(), self.format_source(), self.format_name()] + self.packageQueries
+        args = [self.format_recipient(), self.format_source(), self.format_name()] + filter_array(self.filter)
         if not self.context.execute(extra_args + ['snapshot', 'pull'] + args):
             raise AptlyException()
 

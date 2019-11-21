@@ -1,6 +1,6 @@
 aptly repo show allocloud
 aptly mirror show debian_bullseye
-aptly -filter=python3-psycopg2 mirror create debian_bullseye http://deb.debian.org/debian bullseye
+aptly -filter='python3-pyrsistent | python3-psycopg2' mirror create debian_bullseye http://deb.debian.org/debian bullseye
 aptly mirror update debian_bullseye
 aptly mirror show debian_buster
 aptly -filter='python3-psycopg2 | python3-aiopg' mirror create debian_buster http://deb.debian.org/debian buster
@@ -14,6 +14,6 @@ aptly snapshot create allocloud from repo allocloud
 aptly snapshot show allocloud_buster
 aptly snapshot merge allocloud_buster debian_buster allocloud
 aptly snapshot show allocloud_buster_pulls
-aptly snapshot pull allocloud_buster debian_bullseye allocloud_buster_pulls python3-psycopg2
+aptly snapshot pull allocloud_buster debian_bullseye allocloud_buster_pulls python3-pyrsistent python3-psycopg2
 aptly publish show buster allocloud-buster
 aptly -distribution=buster publish snapshot allocloud_buster_pulls allocloud-buster

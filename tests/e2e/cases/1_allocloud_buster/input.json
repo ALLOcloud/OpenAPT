@@ -12,7 +12,7 @@
     "debian_bullseye": {
       "archive": "http://deb.debian.org/debian",
       "distribution": "bullseye",
-      "filter": "python3-psycopg2"
+      "filter": "python3-pyrsistent | python3-psycopg2"
     }
   },
   "snapshots": {
@@ -39,7 +39,8 @@
       "type": "pull",
       "source": "debian_bullseye",
       "recipient": "allocloud_buster",
-      "packageQueries": [
+      "filter": [
+        "python3-pyrsistent",
         "python3-psycopg2"
       ]
     }

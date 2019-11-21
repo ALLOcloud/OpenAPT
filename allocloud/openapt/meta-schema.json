@@ -20,14 +20,17 @@
         "$ref": "#/definitions/component"
       }
     },
-    "packageQuery": {
-      "type": "string"
-    },
-    "packageQueries": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/packageQuery"
-      }
+    "filter": {
+      "oneOf": [
+        {
+          "type": "string"
+        }, {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     }
   },
   "type": "object",
@@ -80,7 +83,7 @@
             "$ref": "#/definitions/architectures"
           },
           "filter": {
-            "type": "string"
+            "$ref": "#/definitions/filter"
           },
           "filterWithDeps": {
             "type": "boolean"
@@ -135,7 +138,7 @@
     "snapshots": {
       "type": "object",
       "additionalProperties": {
-        "oneOf": [
+        "anyOf": [
           {
             "type": "object",
             "required": [
@@ -212,7 +215,7 @@
                 "type": "string"
               },
               "filter": {
-                "type": "string"
+                "$ref": "#/definitions/filter"
               },
               "withDeps": {
                 "type": "boolean"
@@ -227,7 +230,7 @@
               "type",
               "source",
               "recipient",
-              "packageQueries"
+              "filter"
             ],
             "properties": {
               "type": {
@@ -239,8 +242,8 @@
               "recipient": {
                 "type": "string"
               },
-              "packageQueries": {
-                "$ref": "#/definitions/packageQueries"
+              "filter": {
+                "$ref": "#/definitions/filter"
               },
               "allMatches": {
                 "type": "boolean"
