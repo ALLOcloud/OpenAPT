@@ -15,5 +15,5 @@ aptly snapshot show allocloud_buster
 aptly snapshot merge allocloud_buster debian_buster allocloud
 aptly snapshot show allocloud_buster_pulls
 aptly snapshot pull allocloud_buster debian_bullseye allocloud_buster_pulls python3-pyrsistent python3-psycopg2
-aptly publish show buster allocloud-buster
-aptly -distribution=buster publish snapshot allocloud_buster_pulls allocloud-buster
+aptly publish show buster
+aptly -distribution=buster publish snapshot allocloud_buster_pulls

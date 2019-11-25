@@ -15,5 +15,5 @@ aptly snapshot show {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster
 aptly snapshot merge {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_buster {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud
 aptly snapshot show {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster_pulls
 aptly snapshot pull {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster {now:date:%Y%d%m%H%M%S}_{random:.8s}_debian_bullseye {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster_pulls python3-pyrsistent python3-psycopg2
-aptly publish show buster allocloud-buster
-aptly -distribution=buster publish snapshot {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster_pulls allocloud-buster
+aptly publish show buster
+aptly -distribution=buster publish snapshot {now:date:%Y%d%m%H%M%S}_{random:.8s}_allocloud_buster_pulls

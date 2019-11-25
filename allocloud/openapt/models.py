@@ -311,14 +311,17 @@ class SnapshotPull(Snapshot):
 class Publishing(Entity):
     snapshot: str
     distribution: str
+    prefix: Optional[str] = None
     forceOverwrite: bool = False
 
     def format_snapshot(self):
         return self.context.format('snapshot', self.snapshot)
 
     def run(self):
-        if not self.context.execute(['publish', 'show', self.distribution, self.name], 1, False):
-            args = [self.distribution, self.name, self.format_snapshot()]
+        optional_args = [self.prefix] if self.prefix else []
+
+        if not self.context.execute(['publish', 'show', self.distribution] + optional_args, 1, False):
+            args = [self.distribution] + optional_args + [self.format_snapshot()]
 
             # NOTE: this is not expected to block when a package is replaced
             # To replace packages => -force-overwrite
@@ -334,7 +337,7 @@ class Publishing(Entity):
         if self.distribution:
             extra_args.append('-distribution=%s' % self.distribution)
 
-        args = [self.format_snapshot(), self.name]
+        args = [self.format_snapshot()] + optional_args
         if not self.context.execute(extra_args + ['publish', 'snapshot'] + args):
             raise AptlyException()
 

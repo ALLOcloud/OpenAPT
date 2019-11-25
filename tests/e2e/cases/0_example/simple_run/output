@@ -10,5 +10,5 @@ aptly snapshot show buster
 aptly snapshot create buster from mirror debian_buster
 aptly snapshot show openapt
 aptly snapshot merge openapt allocloud_filtered buster
-aptly publish show buster openapt
-aptly -distribution=buster publish snapshot openapt openapt
+aptly publish show prod repositories/openapt
+aptly -distribution=prod publish snapshot openapt repositories/openapt

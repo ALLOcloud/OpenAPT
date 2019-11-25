@@ -114,6 +114,9 @@
               "distribution": {
                 "type": "string"
               },
+              "prefix": {
+                "type": "string"
+              },
               "components": {
                 "$ref": "#/definitions/components"
               }

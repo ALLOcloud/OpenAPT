@@ -35,8 +35,9 @@
   },
   "publishings": {
     "openapt": {
-      "distribution": "buster",
-      "snapshot": "openapt"
+      "snapshot": "openapt",
+      "distribution": "prod",
+      "prefix": "repositories/openapt"
     }
   }
 }

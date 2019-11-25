@@ -79,17 +79,20 @@
     }
   },
   "publishings": {
-    "allocloud/apt": {
+    "apt": {
       "snapshot": "allocloud_apt",
-      "distribution": "buster"
+      "distribution": "apt",
+      "prefix": "allocloud"
     },
-    "allocloud/numberland": {
+    "numberland": {
       "snapshot": "allocloud_numberland",
-      "distribution": "buster"
+      "distribution": "prod",
+      "prefix": "allocloud/numberland"
     },
-    "allocloud-yankee": {
+    "yankee": {
       "snapshot": "allocloud_yankee",
-      "distribution": "buster"
+      "distribution": "prod",
+      "prefix": "allocloud/yankee"
     }
   }
 }
