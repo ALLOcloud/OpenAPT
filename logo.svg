@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="400"
+   height="400"
+   viewBox="0 0 400 400.00002"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/rme/documents/development/allocloud/open-apt/logo.png"
+   inkscape:export-xdpi="122.88"
+   inkscape:export-ydpi="122.88">
+  <title
+     id="title815">OpenAPT</title>
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4584">
+      <stop
+         style="stop-color:#0b2817;stop-opacity:1"
+         offset="0"
+         id="stop4580" />
+      <stop
+         style="stop-color:#16502d;stop-opacity:1"
+         offset="1"
+         id="stop4582" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4584"
+       id="linearGradient4586"
+       x1="196.39001"
+       y1="857.9527"
+       x2="196.39001"
+       y2="990.23621"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.34419688,0,0,0.34419688,198.32088,368.88547)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4584"
+       id="linearGradient4608"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.34419688,0,0,0.34419688,112.06745,557.8351)"
+       x1="196.39001"
+       y1="857.9527"
+       x2="196.39001"
+       y2="990.23621" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="145.46066"
+     inkscape:cy="66.909411"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     units="px"
+     scale-x="1"
+     borderlayer="false"
+     inkscape:showpageshadow="false"
+     inkscape:window-width="1918"
+     inkscape:window-height="1158"
+     inkscape:window-x="1920"
+     inkscape:window-y="20"
+     inkscape:window-maximized="1"
+     showguides="false">
+    <inkscape:grid
+       type="axonomgrid"
+       id="grid817"
+       units="mm"
+       empspacing="5"
+       enabled="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>OpenAPT</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by/4.0/" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Raphael Medaer &lt;raphael.medaer@allocloud.com&gt;</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-722.51965)">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4.53543329;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4761"
+       width="400"
+       height="280"
+       x="0"
+       y="782.51965"
+       inkscape:export-xdpi="122.88"
+       inkscape:export-ydpi="122.88" />
+    <g
+       id="g4759"
+       transform="matrix(1,0,0,0.87855648,1.973405,97.368445)"
+       style="stroke-width:1.06687903">
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4562"
+         d="m 98.195002,895.74804 -45.824332,-7.5591 98.19501,-56.69291 45.82433,7.55909 z"
+         style="fill:#37c871;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4566"
+         d="m 196.39001,839.05512 v 113.38583 l 98.195,-56.69291 z"
+         style="fill:#217844;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4568"
+         d="M 98.195002,895.74804 196.39001,839.05512 V 952.44095 Z"
+         style="fill:#2ca05a;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4570"
+         d="m 196.39001,839.05512 45.82434,-7.55909 98.19501,56.69291 -45.82435,7.5591 z"
+         style="fill:#2ca05a;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <text
+         transform="matrix(0.86602543,0.50000002,0,1.1547005,0,0)"
+         id="text4578"
+         y="697.41119"
+         x="240.60449"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48.25102997px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:Roboto;letter-spacing:0px;word-spacing:0px;fill:#16502d;fill-opacity:1;stroke:none;stroke-width:1.06687903"
+         xml:space="preserve"><tspan
+           style="letter-spacing:-5.50715017px;fill:#16502d;fill-opacity:1;stroke-width:1.06687903"
+           y="697.41119"
+           x="240.60449"
+           id="tspan4576"
+           sodipodi:role="line">OA</tspan></text>
+      <text
+         transform="matrix(0.86602543,-0.50000002,0,1.1547005,0,0)"
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48.25103378px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:Roboto;letter-spacing:0px;word-spacing:0px;fill:#217844;fill-opacity:1;stroke:none;stroke-width:1.06687903"
+         x="152.61903"
+         y="891.27588"
+         id="text4606"><tspan
+           sodipodi:role="line"
+           id="tspan4604"
+           x="152.61903"
+           y="891.27588"
+           style="letter-spacing:-5.50715017px;fill:#217844;fill-opacity:1;stroke-width:1.06687903">OA</tspan></text>
+      <path
+         inkscape:connector-curvature="0"
+         id="path4666"
+         d="m 98.195006,990.23619 98.195004,-56.69292 98.19501,56.69292 -98.19501,56.69291 z"
+         style="fill:#1e6d3e;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4560"
+         d="m 98.195002,895.74804 v 94.48818 l 98.195008,56.69288 v -94.48815 z"
+         style="fill:#37c871;fill-opacity:1;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4564"
+         d="m 196.39001,952.44095 98.195,-56.69291 v 94.48818 l -98.195,56.69288 z"
+         style="fill:#5fd38d;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <text
+         transform="matrix(0.86602543,0.50000002,0,1.1547005,0,0)"
+         id="text4578-3"
+         y="795.0423"
+         x="134.71494"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48.25102997px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:Roboto;letter-spacing:0px;word-spacing:0px;fill:#5fd38d;fill-opacity:1;stroke:none;stroke-width:1.06687903"
+         xml:space="preserve"><tspan
+           style="letter-spacing:-5.50715017px;fill:#5fd38d;fill-opacity:1;stroke-width:1.06687903"
+           y="795.0423"
+           x="134.71494"
+           id="tspan4576-8"
+           sodipodi:role="line">OA</tspan></text>
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4572"
+         d="m 98.195002,895.74804 -32.731668,56.69291 98.195006,56.69285 32.73167,-56.69285 z"
+         style="fill:#87deaa;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <text
+         transform="matrix(0.86602543,-0.50000002,0,1.1547005,0,0)"
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48.25103378px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:Roboto;letter-spacing:0px;word-spacing:0px;fill:#37c871;fill-opacity:1;stroke:none;stroke-width:1.06687903"
+         x="254.22647"
+         y="991.05316"
+         id="text4606-3"><tspan
+           sodipodi:role="line"
+           id="tspan4604-1"
+           x="254.22647"
+           y="991.05316"
+           style="letter-spacing:-5.50715017px;fill:#37c871;fill-opacity:1;stroke-width:1.06687903">OA</tspan></text>
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4574"
+         d="m 196.39001,952.44095 49.09751,47.24405 98.195,-56.69291 -49.09751,-47.24405 z"
+         style="fill:#afe9c6;stroke:none;stroke-width:1.06687903px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>
