@@ -4,12 +4,14 @@
     <meta charset="utf-8">
     <title>OpenAPT</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       * {
         padding: 0;
         margin: 0;
         font-family: 'Roboto', sans-serif;
+        color: rgba(0, 0, 0, 0.92);
       }
       html {
         box-sizing: border-box;
@@ -27,6 +29,19 @@
         padding: 0;
         margin: 0;
       }
+      @font-face {
+        font-family:"Material Design Icons";
+        src: url("https://cdn.materialdesignicons.com/4.5.95/fonts/materialdesignicons-webfont.eot?v=4.5.95");
+        src: url("https://cdn.materialdesignicons.com/4.5.95/fonts/materialdesignicons-webfont.eot?#iefix&v=4.5.95") format("embedded-opentype"),
+             url("https://cdn.materialdesignicons.com/4.5.95/fonts/materialdesignicons-webfont.woff2?v=4.5.95") format("woff2"),
+             url("https://cdn.materialdesignicons.com/4.5.95/fonts/materialdesignicons-webfont.woff?v=4.5.95") format("woff"),
+             url("https://cdn.materialdesignicons.com/4.5.95/fonts/materialdesignicons-webfont.ttf?v=4.5.95") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+      .symbol {
+        font: normal normal normal 24px/1 "Material Design Icons";
+      }
       div.content {
         height: 100%;
         text-align: center;
@@ -35,15 +50,27 @@
         justify-content: center;
         flex-direction: column;
       }
+      a {
+        color: #096dd9;
+      }
       h1 {
         font-weight: 400;
         font-size: 3.8em;
         padding-bottom: 24px;
         margin: 0 auto;
       }
-      p {
+      h1 a {
+        color: rgba(0, 0, 0, 0.92);
+        text-decoration: none;
+        cursor: pointer;
+      }
+      h1 .symbol {
+        font-size: 1em;
+      }
+      div.content p {
         width: 100%;
         font-weight: 300;
+        font-size: 1em;
         max-width: 400px;
         padding-bottom: 16px;
         margin: 0 auto;
@@ -52,13 +79,30 @@
         margin-top: -40px;
         margin: -40px auto 0 auto;
       }
+      footer {
+        position: absolute;
+        bottom: 0;
+        text-align: center;
+        width: 100%;
+        padding: 16px;
+        box-sizing: border-box;
+        font-size: 0.8em;
+        font-weight: 300;
+      }
+      .heart {
+        color: #cf1322;
+        font-size: 0.92em;
+      }
     </style>
   </head>
   <body>
     <div class="content">
       <img src="logo.png">
-      <h1>OpenAPT</h1>
+      <h1><a href="https://github.com/ALLOcloud/OpenAPT">OpenAPT <span class="symbol">&#xF2A4;</span></a></h1>
       <p>Description format for APT repositories and its Python implementation using Aptly.</p>
     </div>
+    <footer>
+      <p>Made with <span class="symbol heart">&#xF2D1;</span> by <a href="https://allocloud.com">ALLOcloud</a> development team!</p>
+    </footer>
   </body>
 </html>
