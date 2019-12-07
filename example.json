@@ -35,7 +35,8 @@
   },
   "publishings": {
     "openapt": {
-      "snapshot": "openapt"
+      "snapshot": "openapt",
+      "distribution": "stable"
     }
   }
 }
