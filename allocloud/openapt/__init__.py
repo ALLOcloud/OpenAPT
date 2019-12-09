@@ -69,7 +69,7 @@ def class_for(keyword):
 
 
 # pylint:disable=too-many-locals
-def run(schema, config=None, snapshot_subst=None, dry_run=False, limit=None, **kwargs):
+def run(schema, config=None, snapshot_subst=None, dry_run=False, limits=None, **kwargs):
     with open(schema) as f:
         _schema = json.loads(f.read())
 
@@ -113,7 +113,7 @@ def run(schema, config=None, snapshot_subst=None, dry_run=False, limit=None, **k
 
     ordered_entities = graph.resolve(
         entities,
-        [entities.search(_limit.split(':')[1], class_for(_limit.split(':')[0])) for _limit in limit or []]
+        [entities.search(limit.split(':')[1], class_for(limit.split(':')[0])) for limit in limits or []]
     )
 
     for entity in ordered_entities:

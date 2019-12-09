@@ -37,6 +37,7 @@ def main():
     )
     parser.add_argument(
         '--limit',
+        dest='limits',
         action='append',
         required=False,
         metavar='<limit-description>',
