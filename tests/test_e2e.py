@@ -97,7 +97,7 @@ def test_e2e(case, caplog):
             logger = logging.getLogger()
             logger.addHandler(handler)
             try:
-                run(case.input_path, limit=case.options.get('--limit'))
+                run(case.input_path, limits=case.options.get('--limit'))
             finally:
                 logger.removeHandler(handler)
 
