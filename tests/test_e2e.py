@@ -16,6 +16,7 @@ from allocloud.openapt import create_stream_handler, setup_logging, run
 
 @dataclass
 class Case:
+    name: str
     setup: List[List[str]]
     input_path: str
     options: Mapping[str, str]
@@ -52,6 +53,7 @@ def cases(basedir):
                 _output = file.read()
 
             _case = Case(
+                name=_dir,
                 setup=_setup,
                 input_path=str(_input_path),
                 options=_options,
@@ -63,7 +65,11 @@ def cases(basedir):
 CASES = cases(Path(__file__).parent / 'e2e' / 'cases')
 APTLY_CONF_TEMPLATE = json.loads(pkgutil.get_data('e2e', 'aptly.conf'))
 
-@pytest.mark.parametrize('case', CASES)
+
+def idfn(case):
+    return case.name
+
+@pytest.mark.parametrize('case', CASES, ids=idfn)
 def test_e2e(case, caplog):
     setup_logging()
     caplog.set_level(logging.DEBUG)
