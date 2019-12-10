@@ -1,0 +1,43 @@
+{
+  "repositories": {
+    "allocloud": {
+    }
+  },
+  "mirrors": {
+    "debian_buster": {
+      "archive": "http://deb.debian.org/debian",
+      "distribution": "buster",
+      "filter": "toilet"
+    }
+  },
+  "snapshots": {
+    "allocloud": {
+      "type": "create",
+      "repository": "allocloud"
+    },
+    "buster": {
+      "type": "create",
+      "mirror": "debian_buster"
+    },
+    "openapt": {
+      "type": "merge",
+      "sources": [
+        "allocloud_filtered",
+        "buster"
+      ]
+    },
+    "allocloud_filtered": {
+      "type": "filter",
+      "source": "allocloud",
+      "filter": "toilet",
+      "withDeps": true
+    }
+  },
+  "publishings": {
+    "openapt": {
+      "snapshot": "openapt",
+      "distribution": "prod",
+      "prefix": "repositories/openapt"
+    }
+  }
+}

@@ -33,33 +33,32 @@ def cases(basedir):
     for _dir in list_dirs(basedir):
         _case_dir = basedir / _dir
         _setup_path = _case_dir / 'setup.json'
-        _input_path = _case_dir / 'input.json'
+        _input_path = _case_dir / 'schema.json'
 
         _setup = []
         if _setup_path.exists():
             with open(_setup_path, 'r') as file:
                 _setup = json.load(file)
 
-        for __dir in list_dirs(_case_dir):
-            _options_path = _case_dir / __dir / 'options.json'
-            _output_path = _case_dir / __dir / 'output'
+        _options_path = _case_dir / 'options.json'
+        _output_path = _case_dir / 'output.txt'
 
-            _options = {}
-            if _options_path.exists():
-                with open(_options_path, 'r') as file:
-                    _options = json.load(file)
+        _options = {}
+        if _options_path.exists():
+            with open(_options_path, 'r') as file:
+                _options = json.load(file)
 
-            with open(_output_path, 'r') as file:
-                _output = file.read()
+        with open(_output_path, 'r') as file:
+            _output = file.read()
 
-            _case = Case(
-                name=_dir,
-                setup=_setup,
-                input_path=str(_input_path),
-                options=_options,
-                expected_output=_output,
-            )
-            _cases.append(_case)
+        _case = Case(
+            name=_dir,
+            setup=_setup,
+            input_path=str(_input_path),
+            options=_options,
+            expected_output=_output,
+        )
+        _cases.append(_case)
     return _cases
 
 CASES = cases(Path(__file__).parent / 'e2e' / 'cases')
