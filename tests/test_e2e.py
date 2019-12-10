@@ -110,4 +110,4 @@ def test_e2e(case, caplog):
             log_contents = log_contents.replace(f' -config={f.name}', '')
             log_string.close()
 
-            assert log_contents == case.expected_output
+            assert case.expected_output == log_contents
