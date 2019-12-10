@@ -20,11 +20,16 @@ class Graph():
             for entity in list(filter(lambda entity: edges.has_dependency(entity) is None, entities))
         ]
 
+        # "Forced" entities are entities which need to be included if they have multiple incoming edges
+        # both included and excluded
+        # It's a (very bad) way to filter with dependencies in Kahn algorithm
+        forced_entities = []
+
         # For each root entity we find its dependencies and we add them self as a root dependency
         while root_entities:
             entity, included = root_entities.pop()
 
-            if entity in limits:
+            if entity in limits or entity in forced_entities:
                 included = True
 
             if included:
@@ -37,6 +42,8 @@ class Graph():
                 edges.remove(source, dependency)
                 if not edges.has_dependency(dependency):
                     root_entities.append((dependency, included))
+                else:
+                    forced_entities.append(dependency)
 
         # If we still have edges in the graph, they are circular dependencies
         if not edges.empty():
