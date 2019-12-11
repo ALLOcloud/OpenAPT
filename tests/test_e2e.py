@@ -14,10 +14,13 @@ import pytest
 from allocloud.openapt.models import Context, NameFormatter
 from allocloud.openapt import create_stream_handler, setup_logging, run
 
+AptlyArgument = str
+AptlyCommand = List[AptlyArgument]
+
 @dataclass
 class Case:
     name: str
-    setup: List[List[str]]
+    setup: List[AptlyCommand]
     input_path: str
     options: Mapping[str, str]
     expected_output: str
