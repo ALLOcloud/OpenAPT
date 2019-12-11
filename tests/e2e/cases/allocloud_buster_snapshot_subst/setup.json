@@ -1,4 +1,9 @@
-[
-  ["repo", "create", "allocloud"],
-  ["repo", "add", "allocloud", "tests/e2e/allocloud-test_1.0_all.deb"]
-]
+{
+  "before": [
+    ["repo", "create", "allocloud"],
+    ["repo", "add", "allocloud", "tests/e2e/allocloud-test_1.0_all.deb"]
+  ],
+  "arguments": {
+    "--snapshot-subst": "{now:date:%Y%d%m%H%M%S}_{random:.8s}_{name}"
+  }
+}

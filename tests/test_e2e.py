@@ -20,9 +20,9 @@ AptlyCommand = List[AptlyArgument]
 @dataclass
 class Case:
     name: str
-    setup: List[AptlyCommand]
-    input_path: str
-    options: Mapping[str, str]
+    before: List[AptlyCommand]
+    schema: str
+    arguments: Mapping[str, str]
     expected_output: str
 
 def list_dirs(basedir):
@@ -31,40 +31,27 @@ def list_dirs(basedir):
             for _dir in dirs:
                 yield _dir
 
-def cases(basedir):
-    _cases = []
-    for _dir in list_dirs(basedir):
-        _case_dir = basedir / _dir
-        _setup_path = _case_dir / 'setup.json'
-        _input_path = _case_dir / 'schema.json'
+def collect_cases(base_dir):
+    cases = []
+    for case_dir in list_dirs(base_dir):
+        with open(base_dir / case_dir / 'setup.json', 'r') as f:
+            setup = json.load(f)
 
-        _setup = []
-        if _setup_path.exists():
-            with open(_setup_path, 'r') as file:
-                _setup = json.load(file)
+        with open(base_dir / case_dir / 'output.txt', 'r') as f:
+            output = f.read()
 
-        _options_path = _case_dir / 'options.json'
-        _output_path = _case_dir / 'output.txt'
-
-        _options = {}
-        if _options_path.exists():
-            with open(_options_path, 'r') as file:
-                _options = json.load(file)
-
-        with open(_output_path, 'r') as file:
-            _output = file.read()
-
-        _case = Case(
-            name=_dir,
-            setup=_setup,
-            input_path=str(_input_path),
-            options=_options,
-            expected_output=_output,
+        cases.append(
+            Case(
+                name=case_dir,
+                before=setup.get('before', []),
+                arguments=setup.get('arguments', {}),
+                schema=str(base_dir / case_dir / setup.get('schema', 'schema.json')),
+                expected_output=output,
+            )
         )
-        _cases.append(_case)
-    return _cases
+    return cases
 
-CASES = cases(Path(__file__).parent / 'e2e' / 'cases')
+CASES = collect_cases(Path(__file__).parent / 'e2e' / 'cases')
 APTLY_CONF_TEMPLATE = json.loads(pkgutil.get_data('e2e', 'aptly.conf'))
 
 
@@ -83,7 +70,7 @@ def test_e2e(case, caplog):
         context = Context(
             config=f.name,
             formats={
-                'snapshot': case.options.get('--snapshot-subst', '{name}'),
+                'snapshot': case.arguments.get('--snapshot-subst', '{name}'),
             },
         )
         formatter = NameFormatter()
@@ -93,7 +80,7 @@ def test_e2e(case, caplog):
             random=context.random,
         )
 
-        for step in case.setup:
+        for step in case.before:
             assert context.execute(step, 0)
 
         with unittest.mock.patch('allocloud.openapt.Context') as MockContext:
@@ -105,7 +92,7 @@ def test_e2e(case, caplog):
             logger = logging.getLogger()
             logger.addHandler(handler)
             try:
-                run(case.input_path, limits=case.options.get('--limit'))
+                run(case.schema, limits=case.arguments.get('--limit'))
             finally:
                 logger.removeHandler(handler)
 

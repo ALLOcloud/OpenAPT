@@ -1,3 +1,0 @@
-{
-  "--snapshot-subst": "{now:date:%Y%d%m%H%M%S}_{random:.8s}_{name}"
-}
