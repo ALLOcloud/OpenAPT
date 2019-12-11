@@ -13,7 +13,7 @@ Most of the concepts and workflows used are borrowed from [aptly entities and tr
 
 ## Specifications
 
-An OpenAPT schema is nothing more than a structured JSON file and looks like the following:
+An OpenAPT schema is a structured JSON or YAML file and looks like the following:
 
 ```json
 {
