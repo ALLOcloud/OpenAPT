@@ -2,11 +2,8 @@ import sys
 import logging
 import json
 import yaml
-from pkg_resources import resource_string
 
-from jsonschema import Draft4Validator
-
-from allocloud.openapt.errors import SchemaParseException
+from allocloud.openapt.specs import validate_schema
 from allocloud.openapt.dependency import Graph
 from allocloud.openapt.models import (
     EntityCollection,
@@ -21,9 +18,6 @@ from allocloud.openapt.models import (
     Publishing,
     Context,
 )
-
-
-META_SCHEMA = json.loads(resource_string(__name__, 'meta-schema.json'))
 
 
 class LogLevelFilter:
@@ -74,10 +68,7 @@ def run(schema, config=None, snapshot_subst=None, dry_run=False, limits=None, **
     with open(schema) as f:
         _schema = yaml.load(f)
 
-    validator = Draft4Validator(META_SCHEMA)
-    errors = list(validator.iter_errors(_schema))
-    if errors:
-        raise SchemaParseException(errors)
+    validate_schema(_schema)
 
     context = Context(
         config=config,

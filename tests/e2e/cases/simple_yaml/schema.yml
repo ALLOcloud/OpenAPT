@@ -1,5 +1,6 @@
 ---
 # This file contains an example of OpenAPT schema in YAML
+openapt: "1.0"
 
 repositories:
   allocloud:

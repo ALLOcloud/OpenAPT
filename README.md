@@ -17,6 +17,7 @@ An OpenAPT schema is nothing more than a structured JSON file and looks like the
 
 ```json
 {
+  "openapt": "1.0",
   "repositories": {
     "mylocalrepo": {
     }

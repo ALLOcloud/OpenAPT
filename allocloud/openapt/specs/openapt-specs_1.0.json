@@ -35,12 +35,16 @@
   },
   "type": "object",
   "required": [
+    "openapt",
     "repositories",
     "mirrors",
     "snapshots",
     "publishings"
   ],
   "properties": {
+    "openapt": {
+      "type": "string"
+    },
     "repositories": {
       "type": "object",
       "additionalProperties": [
