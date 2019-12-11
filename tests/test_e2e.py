@@ -25,15 +25,12 @@ class Case:
     arguments: Mapping[str, str]
     expected_output: str
 
-def list_dirs(basedir):
-    for subdir, dirs, _ in os.walk(basedir):
-        if Path(subdir) == basedir:
-            for _dir in dirs:
-                yield _dir
-
 def collect_cases(base_dir):
     cases = []
-    for case_dir in list_dirs(base_dir):
+    for case_dir in os.listdir(base_dir):
+        if not os.path.isdir(base_dir / case_dir):
+            continue
+
         with open(base_dir / case_dir / 'setup.json', 'r') as f:
             setup = json.load(f)
 
@@ -51,21 +48,21 @@ def collect_cases(base_dir):
         )
     return cases
 
-CASES = collect_cases(Path(__file__).parent / 'e2e' / 'cases')
-APTLY_CONF_TEMPLATE = json.loads(pkgutil.get_data('e2e', 'aptly.conf'))
-
-
-def idfn(case):
-    return case.name
-
-@pytest.mark.parametrize('case', CASES, ids=idfn)
+@pytest.mark.parametrize(
+    'case',
+    collect_cases(Path(__file__).parent / 'e2e' / 'cases'),
+    ids=lambda case: case.name
+)
 def test_e2e(case, caplog):
     setup_logging()
     caplog.set_level(logging.DEBUG)
 
     with tempfile.TemporaryDirectory() as root_dir:
         with open(Path(root_dir) / 'aptly.conf', 'w+') as f:
-            f.write(json.dumps({**APTLY_CONF_TEMPLATE, 'rootDir': root_dir}))
+            f.write(json.dumps({
+                **json.loads(pkgutil.get_data('e2e', 'aptly.conf')),
+                'rootDir': root_dir
+            }))
 
         context = Context(
             config=f.name,
