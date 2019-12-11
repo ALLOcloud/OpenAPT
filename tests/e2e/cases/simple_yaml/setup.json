@@ -1,0 +1,7 @@
+{
+  "schema": "schema.yml",
+  "before": [
+    ["repo", "create", "allocloud"],
+    ["repo", "add", "allocloud", "tests/e2e/allocloud-test_1.0_all.deb"]
+  ]
+}
