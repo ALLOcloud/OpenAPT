@@ -1,6 +1,7 @@
 import sys
 import logging
 import json
+import yaml
 from pkg_resources import resource_string
 
 from jsonschema import Draft4Validator
@@ -71,7 +72,7 @@ def class_for(keyword):
 # pylint:disable=too-many-locals
 def run(schema, config=None, snapshot_subst=None, dry_run=False, limits=None, **kwargs):
     with open(schema) as f:
-        _schema = json.loads(f.read())
+        _schema = yaml.load(f)
 
     validator = Draft4Validator(META_SCHEMA)
     errors = list(validator.iter_errors(_schema))

@@ -12,6 +12,7 @@ Build-Depends:
  python3-pytest-runner,
  python3-pytest-pylint,
  python3-jsonschema,
+ python3-yaml,
  aptly
 Standards-Version: 4.1.3
 Homepage: https://gitlab.allocloud.com/allocloud/openapt
