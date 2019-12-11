@@ -43,23 +43,27 @@
   "properties": {
     "repositories": {
       "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "architectures": {
-            "$ref": "#/definitions/architectures"
-          },
-          "component": {
-            "$ref": "#/definitions/component"
-          },
-          "distribution": {
-            "type": "string"
-          },
-          "comment": {
-            "type": "string"
+      "additionalProperties": [
+        {
+          "type": "null"
+        }, {
+          "type": "object",
+          "properties": {
+            "architectures": {
+              "$ref": "#/definitions/architectures"
+            },
+            "component": {
+              "$ref": "#/definitions/component"
+            },
+            "distribution": {
+              "type": "string"
+            },
+            "comment": {
+              "type": "string"
+            }
           }
         }
-      }
+      ]
     },
     "mirrors": {
       "type": "object",

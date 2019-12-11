@@ -350,7 +350,7 @@ class EntityCollection(list):
 
     def load(self, schema, context):
         for name, params in schema.get('repositories').items():
-            self.append(Repository(name=name, context=context, **params))
+            self.append(Repository(name=name, context=context, **(params or {})))
 
         for name, params in schema.get('mirrors').items():
             self.append(Mirror(name=name, context=context, **params))
