@@ -16,8 +16,8 @@ setup(
     python_requires='>=3.7',
     packages=find_namespace_packages(),
     package_data={
-        'allocloud.openapt': [
-            'meta-schema.json',
+        'allocloud.openapt.specs': [
+            '*.json',
         ],
     },
     install_requires=[
