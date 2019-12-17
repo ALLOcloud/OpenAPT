@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import sys
+
 from setuptools import setup, find_namespace_packages
 
 setup(
@@ -11,6 +13,7 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3.7',
     ],
+    python_requires='>=3.7',
     packages=find_namespace_packages(),
     package_data={
         'allocloud.openapt': [
@@ -19,7 +22,8 @@ setup(
     },
     install_requires=[
         'jsonschema',
-    ],
+        'pyyaml',
+    ] if sys.argv[1] != 'test' else [],
     setup_requires=[
         'pytest-runner',
         'pytest-pylint',
@@ -28,6 +32,7 @@ setup(
         'pytest',
         'pylint',
     ],
+    test_suite='tests',
     entry_points={
         'console_scripts': [
             'openapt = allocloud.openapt.__main__:main',

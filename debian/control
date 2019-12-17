@@ -23,7 +23,7 @@ Vcs-Git: https://gitlab.allocloud.com/allocloud/openapt.git
 
 Package: openapt
 Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, python3-jsonschema
+Depends: ${python3:Depends}, ${misc:Depends}
 Description: Specify and automate APT repository management
  This package provides a tool to automate APT repository management
  through a single APT schema model.
