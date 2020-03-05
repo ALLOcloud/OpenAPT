@@ -30,6 +30,13 @@ def main():
         required=False,
     )
     parser.add_argument(
+        '--update',
+        action='store_true',
+        default=False,
+        required=False,
+        help='update package lists from upstream mirrors',
+    )
+    parser.add_argument(
         '--snapshot-subst',
         required=False,
         metavar='<template>',

@@ -66,6 +66,7 @@ def test_e2e(case, caplog):
 
         context = Context(
             config=f.name,
+            update=case.arguments.get('--update', False),
             formats={
                 'snapshot': case.arguments.get('--snapshot-subst', '{name}'),
             },

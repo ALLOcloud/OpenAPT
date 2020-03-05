@@ -1,0 +1,2 @@
+aptly mirror show debian_buster
+aptly mirror update debian_buster

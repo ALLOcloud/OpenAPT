@@ -64,7 +64,7 @@ def class_for(keyword):
 
 
 # pylint:disable=too-many-locals
-def run(schema, config=None, snapshot_subst=None, dry_run=False, limits=None, **kwargs):
+def run(schema, config=None, snapshot_subst=None, dry_run=False, update=False, limits=None, **kwargs):
     with open(schema) as f:
         _schema = yaml.load(f)
 
@@ -73,6 +73,7 @@ def run(schema, config=None, snapshot_subst=None, dry_run=False, limits=None, **
     context = Context(
         config=config,
         dry_run=dry_run,
+        update=update,
         formats={
             'snapshot': snapshot_subst or '{name}',
         }

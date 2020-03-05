@@ -46,10 +46,11 @@ class NameFormatter(Formatter):
         return super(NameFormatter, self).get_field(field_name, args, kwargs)
 
 class Context():
-    def __init__(self, binary=None, config=None, dry_run=False, formats=None):
+    def __init__(self, binary=None, config=None, dry_run=False, update=False, formats=None):
         self.binary = binary
         self.config = config
         self.dry_run = dry_run
+        self.update = update
         self.formats = formats or {}
         self.now = datetime.now()
         self.random = ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(32))
@@ -170,7 +171,10 @@ class Mirror(Entity):
             if not self.context.execute(extra_args + ['mirror', 'create'] + args):
                 raise AptlyException()
 
-        if not self.context.execute(['mirror', 'update', self.name]):
+            if not self.context.execute(['mirror', 'update', self.name]):
+                raise AptlyException()
+
+        if self.context.update and not self.context.execute(['mirror', 'update', self.name]):
             raise AptlyException()
 
 @dataclass

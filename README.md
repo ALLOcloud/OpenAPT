@@ -84,6 +84,7 @@ optional arguments:
   --debug
   --config <file>
   --dry-run
+  --update                     update package lists from upstream mirrors
   --snapshot-subst <template>  formating string for snapshots (e.g. "{now:date:%Y%d%m_%H%M%S}_{random:.8s}_{name}")
   --limit <limit-description>  limit string (e.g. "publishing:mydistro")
 ```

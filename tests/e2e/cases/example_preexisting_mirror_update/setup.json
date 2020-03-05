@@ -1,0 +1,9 @@
+{
+  "before": [
+    ["-filter=toilet", "mirror", "create", "debian_buster", "http://deb.debian.org/debian", "buster"],
+    ["mirror", "update", "debian_buster"]
+  ],
+  "arguments": {
+    "--update": true
+  }
+}
