@@ -42,7 +42,7 @@ class Graph():
                 edges.remove(source, dependency)
                 if not edges.has_dependency(dependency):
                     root_entities.append((dependency, included))
-                else:
+                elif included:
                     forced_entities.append(dependency)
 
         # If we still have edges in the graph, they are circular dependencies
