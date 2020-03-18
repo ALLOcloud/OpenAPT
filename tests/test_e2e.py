@@ -12,7 +12,8 @@ from typing import List, Mapping
 import pytest
 
 from allocloud.openapt.models import Context, NameFormatter
-from allocloud.openapt import create_stream_handler, setup_logging, run
+from allocloud.openapt.logging import create_stream_handler, setup_logging
+from allocloud.openapt import run
 
 AptlyArgument = str
 AptlyCommand = List[AptlyArgument]

@@ -1,8 +1,12 @@
 import logging
 import errno
 import os
+import io
 from select import select
 from subprocess import Popen, PIPE
+from contextlib import contextmanager
+
+from allocloud.openapt.logging import create_stream_handler
 
 
 LOGGER = logging.getLogger(__name__)
@@ -38,3 +42,18 @@ def run_command(command, stdout=None, stderr=None, log_output=False):
                             readable[fd].write(data)
                             readable[fd].flush()
     return process
+
+@contextmanager
+def capture_output():
+    LOGGER.propagate = False
+    log_string = io.StringIO()
+    handler = create_stream_handler(log_string, logging.DEBUG, max_level=logging.DEBUG)
+    bk_handlers = LOGGER.handlers
+    LOGGER.handlers = [handler]
+
+    try:
+        yield log_string
+    finally:
+        log_string.close()
+        LOGGER.handlers = bk_handlers
+        LOGGER.propagate = True

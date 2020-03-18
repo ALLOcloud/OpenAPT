@@ -3,7 +3,8 @@ import logging
 from argparse import ArgumentParser
 
 from allocloud.openapt.errors import SchemaParseException, OAException
-from . import setup_logging, run
+from allocloud.openapt.logging import setup_logging
+from . import run
 
 
 LOGGER = logging.getLogger(__name__)

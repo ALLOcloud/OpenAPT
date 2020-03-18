@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Union, List, Optional
 from dataclasses import dataclass
 from allocloud.openapt.errors import EntityNotFoundException, AptlyException
-from allocloud.openapt.commands import run_command
+from allocloud.openapt.commands import run_command, capture_output
 
 LOGGER = logging.getLogger(__name__)
 
@@ -149,23 +149,29 @@ class Mirror(Entity):
         return 3
 
     def run(self):
-        if self.context.execute(['mirror', 'show', self.name], 1, False):
-            extra_args = []
-            if self.architectures:
-                extra_args.append('-architectures=%s' % ','.join(self.architectures))
+        extra_args = []
+        if self.architectures:
+            extra_args.append('-architectures=%s' % ','.join(self.architectures))
 
-            if self.filter:
-                extra_args.append("-filter=%s" % filter_string(self.filter))
+        if self.filter:
+            extra_args.append("-filter=%s" % filter_string(self.filter))
 
-            if self.filterWithDeps:
-                extra_args.append('-filter-with-deps')
+        if self.filterWithDeps:
+            extra_args.append('-filter-with-deps')
 
-            if self.withSources:
-                extra_args.append('-with-sources')
+        if self.withSources:
+            extra_args.append('-with-sources')
 
-            if self.withUdebs:
-                extra_args.append('-with-udebs')
+        if self.withUdebs:
+            extra_args.append('-with-udebs')
 
+        different_definition = False
+
+        with capture_output() as stream:
+            mirror_not_created = self.context.execute(['mirror', 'show', self.name], 1)
+            mirror_definition = stream.getvalue()
+
+        if mirror_not_created:
             components = self.components if self.components else []
             args = [self.name, self.archive, self.distribution] + components
             if not self.context.execute(extra_args + ['mirror', 'create'] + args):
@@ -173,9 +179,16 @@ class Mirror(Entity):
 
             if not self.context.execute(['mirror', 'update', self.name]):
                 raise AptlyException()
+        else:
+            if not self.context.execute(extra_args + ['mirror', 'edit', self.name]):
+                raise AptlyException()
+            with capture_output() as stream:
+                if self.context.execute(['mirror', 'show', self.name]):
+                    different_definition = stream.getvalue() != mirror_definition
 
-        if self.context.update and not self.context.execute(['mirror', 'update', self.name]):
-            raise AptlyException()
+        if self.context.update or different_definition:
+            if not self.context.execute(['mirror', 'update', self.name]):
+                raise AptlyException()
 
 @dataclass
 class Snapshot(Entity):
