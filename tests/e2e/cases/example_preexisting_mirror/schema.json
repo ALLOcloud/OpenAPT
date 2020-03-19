@@ -3,6 +3,11 @@
   "repositories": {
   },
   "mirrors": {
+    "debian_stretch": {
+      "archive": "http://deb.debian.org/debian",
+      "distribution": "stretch",
+      "filter": "toilet"
+    },
     "debian_buster": {
       "archive": "http://deb.debian.org/debian",
       "distribution": "buster",
@@ -10,6 +15,10 @@
     }
   },
   "snapshots": {
+    "debian_stretch": {
+      "type": "create",
+      "mirror": "debian_stretch"
+    },
     "debian_buster": {
       "type": "create",
       "mirror": "debian_buster"

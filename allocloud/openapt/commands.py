@@ -1,8 +1,7 @@
 import logging
 import errno
-import os
 import io
-from select import select
+import select
 from subprocess import Popen, PIPE
 from contextlib import contextmanager
 
@@ -12,35 +11,33 @@ from allocloud.openapt.logging import create_stream_handler
 LOGGER = logging.getLogger(__name__)
 
 
-def run_command(command, stdout=None, stderr=None, log_output=False):
-    # from https://stackoverflow.com/a/31953436/4578715
+def run_command(command, log_output=False):
     with Popen(command, stdout=PIPE, stderr=PIPE) as process:
-        readable = {
-            process.stdout.fileno(): stdout, # log separately
-            process.stderr.fileno(): stderr,
-        }
-        while readable:
-            for fd in select(readable, [], [])[0]:
+        files = [process.stdout, process.stderr]
+        while process.poll() is None:
+            while files:
                 try:
-                    data = os.read(fd, 1024) # read available
-                except OSError as ose:
-                    if ose.errno != errno.EIO:
-                        raise #XXX cleanup
-                    del readable[fd] # EIO means EOF on some systems
-                else:
-                    if not data: # EOF
-                        del readable[fd]
-                    else:
-                        if log_output:
-                            if fd == process.stdout.fileno(): # We caught stdout
-                                for line in data.rstrip().split(b'\n'):
-                                    LOGGER.debug(line.decode())
-                            else: # We caught stderr
-                                for line in data.rstrip().split(b'\n'):
-                                    LOGGER.error(line.decode())
-                        if readable[fd]:
-                            readable[fd].write(data)
-                            readable[fd].flush()
+                    streams, _, _ = select.select(files, [], [])
+                except select.error as err:
+                    if err.args[0] == errno.EINTR:
+                        continue
+                    raise
+
+                if process.stderr in streams:
+                    output = process.stderr.readline().decode()
+                    if not output:
+                        process.stderr.close()
+                        files.remove(process.stderr)
+                    elif log_output:
+                        LOGGER.error(output.rstrip('\n'))
+
+                if process.stdout in streams:
+                    output = process.stdout.readline().decode()
+                    if not output:
+                        process.stdout.close()
+                        files.remove(process.stdout)
+                    elif log_output:
+                        LOGGER.debug(output.rstrip('\n'))
     return process
 
 @contextmanager

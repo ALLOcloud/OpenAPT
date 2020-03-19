@@ -55,7 +55,7 @@ def collect_cases(base_dir):
     ids=lambda case: case.name
 )
 def test_e2e(case, caplog):
-    setup_logging()
+    setup_logging(debug=True)
     caplog.set_level(logging.DEBUG)
 
     with tempfile.TemporaryDirectory() as root_dir:

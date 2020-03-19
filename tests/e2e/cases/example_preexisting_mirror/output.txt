@@ -1,5 +1,10 @@
+aptly mirror show debian_stretch
+aptly -filter=toilet mirror edit debian_stretch
+aptly mirror show debian_stretch
 aptly mirror show debian_buster
 aptly -filter=toilet mirror edit debian_buster
 aptly mirror show debian_buster
+aptly snapshot show debian_stretch
+aptly snapshot create debian_stretch from mirror debian_stretch
 aptly snapshot show debian_buster
 aptly snapshot create debian_buster from mirror debian_buster
