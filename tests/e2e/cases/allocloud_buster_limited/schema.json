@@ -1,0 +1,55 @@
+{
+  "openapt": "1.0",
+  "repositories": {
+    "allocloud": {
+    }
+  },
+  "mirrors": {
+    "debian_buster": {
+      "archive": "http://deb.debian.org/debian",
+      "distribution": "buster",
+      "filter": "python3-psycopg2 | python3-aiopg"
+    },
+    "debian_bullseye": {
+      "archive": "http://deb.debian.org/debian",
+      "distribution": "bullseye",
+      "filter": "python3-pyrsistent | python3-psycopg2"
+    }
+  },
+  "snapshots": {
+    "debian_buster": {
+      "type": "create",
+      "mirror": "debian_buster"
+    },
+    "debian_bullseye": {
+      "type": "create",
+      "mirror": "debian_bullseye"
+    },
+    "allocloud": {
+      "type": "create",
+      "repository": "allocloud"
+    },
+    "allocloud_buster": {
+      "type": "merge",
+      "sources": [
+        "debian_buster",
+        "allocloud"
+      ]
+    },
+    "allocloud_buster_pulls": {
+      "type": "pull",
+      "source": "debian_bullseye",
+      "recipient": "allocloud_buster",
+      "filter": [
+        "python3-pyrsistent",
+        "python3-psycopg2"
+      ]
+    }
+  },
+  "publishings": {
+    "allocloud_buster": {
+      "snapshot": "allocloud_buster_pulls",
+      "distribution": "buster"
+    }
+  }
+}

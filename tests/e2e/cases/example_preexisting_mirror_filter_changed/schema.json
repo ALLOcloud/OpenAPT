@@ -1,0 +1,20 @@
+{
+  "openapt": "1.0",
+  "repositories": {
+  },
+  "mirrors": {
+    "debian_buster": {
+      "archive": "http://deb.debian.org/debian",
+      "distribution": "buster",
+      "filter": "toilet"
+    }
+  },
+  "snapshots": {
+    "debian_buster": {
+      "type": "create",
+      "mirror": "debian_buster"
+    }
+  },
+  "publishings": {
+  }
+}

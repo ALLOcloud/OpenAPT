@@ -1,0 +1,67 @@
+stages:
+  - build
+  - publish
+
+.build: &build
+  image: debian:buster
+  stage: build
+  tags:
+    - docker
+  before_script:
+    - apt-get update
+    - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg
+    - apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
+    - echo 'deb http://repo.aptly.info/ squeeze main' > /etc/apt/sources.list.d/aptly.list
+    - apt-get update
+    - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends devscripts equivs git-lfs git-buildpackage ca-certificates
+    - gpg --no-default-keyring --keyring /usr/share/keyrings/debian-archive-keyring.gpg --export | gpg --no-default-keyring --keyring trustedkeys.gpg --import
+  script:
+    - DEBIAN_FRONTEND=noninteractive mk-build-deps -i -r -t "apt-get -y --no-install-recommends"
+    - gbp buildpackage --git-ignore-branch -us -uc --git-export-dir="dist" --git-prebuild="$GIT_PREBUILD"
+  artifacts:
+    name: "allocloud-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/*
+
+build:prod:
+  only:
+    - tags
+  variables:
+    GIT_PREBUILD: ''
+  <<: *build
+
+build:dev:
+  except:
+    - master
+    - tags
+  variables:
+    GIT_PREBUILD: 'dch -p --distribution "UNRELEASED" -l "~dev" "UNDER DEVELOPMENT"'
+  <<: *build
+
+publish:dev:
+  stage: publish
+  tags:
+    - apt
+  except:
+    - tags
+  only:
+    - develop
+  dependencies:
+    - build:dev
+  script:
+    - aptly repo add -force-replace allocloud dist/*.deb
+
+publish:prod:
+  stage: publish
+  tags:
+    - apt
+  only:
+    - tags
+  dependencies:
+    - build:prod
+  script:
+    - aptly repo add allocloud dist/*.deb
+    - export NOW="$(date)"
+    - allocloud.tools.gitlabrelease --gitlab-url "$CI_API_V4_URL" --gitlab-project-id "$CI_PROJECT_ID" --gitlab-access-token "$GITLAB_TOKEN" --tag "$CI_COMMIT_TAG" dist/*
+    - cat /usr/share/doc/allocloud-tools/examples/release-chat.json | envsubst | allocloud.tools.googlechat  --google-space-id "$GOOGLE_SPACE_ID" --google-key "$GOOGLE_KEY" --google-token "$GOOGLE_TOKEN" --google-thread-key "$GOOGLE_THREAD_KEY"
+

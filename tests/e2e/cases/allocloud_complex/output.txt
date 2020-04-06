@@ -1,0 +1,21 @@
+aptly repo show allocloud
+aptly mirror show debian_buster
+aptly -filter='python3-psycopg2 | python3-aiopg' mirror create debian_buster http://deb.debian.org/debian buster
+aptly mirror update debian_buster
+aptly mirror show debian_bullseye
+aptly -filter=python3-psycopg2 mirror create debian_bullseye http://deb.debian.org/debian bullseye
+aptly mirror update debian_bullseye
+aptly snapshot show debian_buster
+aptly snapshot create debian_buster from mirror debian_buster
+aptly snapshot show allocloud
+aptly snapshot create allocloud from repo allocloud
+aptly snapshot show allocloud_buster
+aptly -latest snapshot merge allocloud_buster debian_buster allocloud
+aptly snapshot show debian_bullseye
+aptly snapshot create debian_bullseye from mirror debian_bullseye
+aptly snapshot show allocloud_buster_numberland_bullseye
+aptly snapshot pull allocloud_buster debian_bullseye allocloud_buster_numberland_bullseye python3-psycopg2
+aptly snapshot show allocloud_numberland
+aptly -with-deps snapshot filter allocloud_buster_numberland_bullseye allocloud_numberland 'Name (% allocloud-numberland*)'
+aptly publish show prod allocloud/numberland
+aptly -distribution=prod publish snapshot allocloud_numberland allocloud/numberland

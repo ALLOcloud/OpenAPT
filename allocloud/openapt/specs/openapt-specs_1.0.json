@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://gitlab.eyepea.eu/allocloud/open-apt/raw/develop/meta-schema.json",
+  "definitions": {
+    "architecture": {
+      "type": "string"
+    },
+    "architectures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/architecture"
+      }
+    },
+    "component": {
+      "type": "string"
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/component"
+      }
+    },
+    "filter": {
+      "oneOf": [
+        {
+          "type": "string"
+        }, {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "openapt",
+    "repositories",
+    "mirrors",
+    "snapshots",
+    "publishings"
+  ],
+  "properties": {
+    "openapt": {
+      "type": "string"
+    },
+    "repositories": {
+      "type": "object",
+      "additionalProperties": [
+        {
+          "type": "null"
+        }, {
+          "type": "object",
+          "properties": {
+            "architectures": {
+              "$ref": "#/definitions/architectures"
+            },
+            "component": {
+              "$ref": "#/definitions/component"
+            },
+            "distribution": {
+              "type": "string"
+            },
+            "comment": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "mirrors": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "archive",
+          "distribution"
+        ],
+        "properties": {
+          "archive": {
+            "type": "string"
+          },
+          "distribution": {
+            "type": "string"
+          },
+          "components": {
+            "$ref": "#/definitions/components"
+          },
+          "architectures": {
+            "$ref": "#/definitions/architectures"
+          },
+          "filter": {
+            "$ref": "#/definitions/filter"
+          },
+          "filterWithDeps": {
+            "type": "boolean"
+          },
+          "withSources": {
+            "type": "boolean"
+          },
+          "withUdebs": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "publishings": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "snapshot",
+              "distribution"
+            ],
+            "properties": {
+              "snapshot": {
+                "type": "string"
+              },
+              "distribution": {
+                "type": "string"
+              },
+              "prefix": {
+                "type": "string"
+              },
+              "components": {
+                "$ref": "#/definitions/components"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "repository"
+            ],
+            "properties": {
+              "repository": {
+                "type": "string"
+              },
+              "components": {
+                "$ref": "#/definitions/components"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "snapshots": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "repository"
+            ],
+            "properties": {
+              "type": {
+                "const": "create"
+              },
+              "repository": {
+                "type": "string"
+              },
+              "architectures": {
+                "$ref": "#/definitions/architectures"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "mirror"
+            ],
+            "properties": {
+              "type": {
+                "const": "create"
+              },
+              "mirror": {
+                "type": "string"
+              },
+              "architectures": {
+                "$ref": "#/definitions/architectures"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "sources"
+            ],
+            "properties": {
+              "type": {
+                "const": "merge"
+              },
+              "sources": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "architectures": {
+                "$ref": "#/definitions/architectures"
+              },
+              "latest": {
+                "type": "boolean"
+              },
+              "noRemove": {
+                "type": "boolean"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "source",
+              "filter"
+            ],
+            "properties": {
+              "type": {
+                "const": "filter"
+              },
+              "source": {
+                "type": "string"
+              },
+              "filter": {
+                "$ref": "#/definitions/filter"
+              },
+              "withDeps": {
+                "type": "boolean"
+              },
+              "architectures": {
+                "$ref": "#/definitions/architectures"
+              }
+            }
+          }, {
+            "type": "object",
+            "required": [
+              "type",
+              "source",
+              "recipient",
+              "filter"
+            ],
+            "properties": {
+              "type": {
+                "const": "pull"
+              },
+              "source": {
+                "type": "string"
+              },
+              "recipient": {
+                "type": "string"
+              },
+              "filter": {
+                "$ref": "#/definitions/filter"
+              },
+              "allMatches": {
+                "type": "boolean"
+              },
+              "noRemove": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

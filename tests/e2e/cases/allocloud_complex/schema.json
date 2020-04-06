@@ -1,0 +1,99 @@
+{
+  "openapt": "1.0",
+  "repositories": {
+    "allocloud": {}
+  },
+  "mirrors": {
+    "debian_buster": {
+      "archive": "http://deb.debian.org/debian",
+      "distribution": "buster",
+      "filter": "python3-psycopg2 | python3-aiopg"
+    },
+    "debian_bullseye": {
+      "archive": "http://deb.debian.org/debian",
+      "distribution": "bullseye",
+      "filter": "python3-psycopg2"
+    },
+    "aptly": {
+      "archive": "http://repo.aptly.info/",
+      "distribution": "squeeze"
+    }
+  },
+  "snapshots": {
+    "allocloud": {
+      "type": "create",
+      "repository": "allocloud"
+    },
+    "debian_buster": {
+      "type": "create",
+      "mirror": "debian_buster"
+    },
+    "debian_bullseye": {
+      "type": "create",
+      "mirror": "debian_bullseye"
+    },
+    "aptly": {
+      "type": "create",
+      "mirror": "aptly"
+    },
+    "allocloud_buster": {
+      "type": "merge",
+      "sources": [
+        "debian_buster",
+        "allocloud"
+      ],
+      "latest": true
+    },
+    "allocloud_apt_aptly": {
+      "type": "pull",
+      "source": "aptly",
+      "recipient": "allocloud_buster",
+      "filter": [
+        "aptly"
+      ]
+    },
+    "allocloud_buster_numberland_bullseye": {
+      "type": "pull",
+      "source": "debian_bullseye",
+      "recipient": "allocloud_buster",
+      "filter": [
+        "python3-psycopg2"
+      ]
+    },
+    "allocloud_apt": {
+      "type": "filter",
+      "source": "allocloud_apt_aptly",
+      "filter": "openapt | aptly",
+      "withDeps": true
+    },
+    "allocloud_numberland": {
+      "type": "filter",
+      "source": "allocloud_buster_numberland_bullseye",
+      "filter": "Name (% allocloud-numberland*)",
+      "withDeps": true
+    },
+    "allocloud_yankee": {
+      "type": "filter",
+      "source": "allocloud_buster",
+      "filter": "Name (% allocloud-yankee*)",
+      "withDeps": true
+    }
+  },
+  "publishings": {
+    "apt": {
+      "snapshot": "allocloud_apt",
+      "distribution": "apt",
+      "prefix": "allocloud"
+    },
+    "numberland": {
+      "snapshot": "allocloud_numberland",
+      "distribution": "prod",
+      "prefix": "allocloud/numberland"
+    },
+    "yankee": {
+      "snapshot": "allocloud_yankee",
+      "distribution": "prod",
+      "prefix": "allocloud/yankee"
+    }
+  }
+}
