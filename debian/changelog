@@ -1,3 +1,9 @@
+openapt (1.0.0) testing; urgency=medium
+
+  * First major release.
+
+ -- Raphael Medaer <raphael.medaer@allocloud.com>  Mon, 06 Apr 2020 17:34:49 +0200
+
 openapt (0.1.0) unstable; urgency=medium
 
   * Initial Release.

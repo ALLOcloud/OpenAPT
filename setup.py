@@ -6,7 +6,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='openapt',
-    version='0.1.0',
+    version='1.0.0',
     description='Specify and automate APT repository management.',
     author='Raphael Medaer',
     author_email='raphael.medaer@allocloud.com',
