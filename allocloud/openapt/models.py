@@ -328,6 +328,7 @@ class SnapshotPull(Snapshot):
 class Publishing(Entity):
     snapshot: str
     distribution: str
+    component: Optional[str] = None
     prefix: Optional[str] = None
     forceOverwrite: bool = False
 
@@ -353,6 +354,9 @@ class Publishing(Entity):
 
         if self.distribution:
             extra_args.append('-distribution=%s' % self.distribution)
+
+        if self.component:
+            extra_args.append('-component=%s' % self.component)
 
         args = [self.format_snapshot()] + optional_args
         if not self.context.execute(extra_args + ['publish', 'snapshot'] + args):

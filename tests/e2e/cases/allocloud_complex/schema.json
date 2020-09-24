@@ -88,7 +88,8 @@
     "numberland": {
       "snapshot": "allocloud_numberland",
       "distribution": "prod",
-      "prefix": "allocloud/numberland"
+      "prefix": "allocloud/numberland",
+      "component": "test"
     },
     "yankee": {
       "snapshot": "allocloud_yankee",

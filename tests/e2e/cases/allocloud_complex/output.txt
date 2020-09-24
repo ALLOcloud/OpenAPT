@@ -18,4 +18,4 @@ aptly snapshot pull allocloud_buster debian_bullseye allocloud_buster_numberland
 aptly snapshot show allocloud_numberland
 aptly -with-deps snapshot filter allocloud_buster_numberland_bullseye allocloud_numberland 'Name (% allocloud-numberland*)'
 aptly publish show prod allocloud/numberland
-aptly -distribution=prod publish snapshot allocloud_numberland allocloud/numberland
+aptly -distribution=prod -component=test publish snapshot allocloud_numberland allocloud/numberland
